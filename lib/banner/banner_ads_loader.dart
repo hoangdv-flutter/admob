@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:admob/ad_id/ad_id.dart';
 import 'package:admob/ads_loader.dart';
-import 'package:admob/ext/di.dart';
+import 'package:flutter_core/ext/di.dart';
 import 'package:flutter_core/data/executable.dart';
 import 'package:flutter_core/ext/stream.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';

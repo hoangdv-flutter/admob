@@ -1,7 +1,7 @@
 import 'package:admob/ad_id/ad_id.dart';
 import 'package:admob/ad_loader_listener.dart';
 import 'package:admob/ads_loader.dart';
-import 'package:admob/ext/di.dart';
+import 'package:flutter_core/ext/di.dart';
 import 'package:admob/full_screen_ads_loader.dart';
 import 'package:admob/shared/ads_shared.dart';
 import 'package:admob/water_flow_manager/water_flow_manager.dart';

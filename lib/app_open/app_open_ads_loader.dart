@@ -1,7 +1,7 @@
 import 'package:admob/ad_id/ad_id.dart';
 import 'package:admob/ads_loader.dart';
-import 'package:admob/ext/di.dart';
 import 'package:admob/shared/ads_shared.dart';
+import 'package:flutter_core/ext/di.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:injectable/injectable.dart';
 

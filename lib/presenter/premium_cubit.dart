@@ -1,4 +1,4 @@
-import 'package:admob/ext/di.dart';
+import 'package:flutter_core/ext/di.dart';
 import 'package:admob/shared/ads_shared.dart';
 import 'package:flutter_core/presenter/base_cubit.dart';
 import 'package:rxdart/rxdart.dart';

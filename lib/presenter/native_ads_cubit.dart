@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:admob/ext/di.dart';
+import 'package:flutter_core/ext/di.dart';
 import 'package:admob/native/native_ads_loader.dart';
 import 'package:admob/native/native_loader_listener.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

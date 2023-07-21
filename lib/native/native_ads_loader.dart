@@ -1,6 +1,6 @@
 import 'package:admob/ad_id/ad_id.dart';
 import 'package:admob/ads_loader.dart';
-import 'package:admob/ext/di.dart';
+import 'package:flutter_core/ext/di.dart';
 import 'package:admob/native/native_ads_factory.dart';
 import 'package:admob/native/native_loader_listener.dart';
 import 'package:flutter_core/data/obj_references.dart';
