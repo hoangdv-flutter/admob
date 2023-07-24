@@ -21,55 +21,55 @@ abstract class BaseNativeAdFactory(
 
     protected var view: View? = null
 
-    protected var nativeAdView: NativeAdView? = null
+    protected var nativeView: NativeAdView? = null
 
-    protected var headlineView: TextView? = null
+    protected var headlineV: TextView? = null
 
-    protected var mediaView: MediaView? = null
+    protected var mediaV: MediaView? = null
 
-    protected var bodyView: TextView? = null
+    protected var bodyV: TextView? = null
 
-    protected var iconView: ImageView? = null
+    protected var iconV: ImageView? = null
 
-    protected var callToActionView: TextView? = null
+    protected var callToActionV: TextView? = null
 
-    protected var adLabelView: View? = null
+    protected var adLabelV: View? = null
 
     override fun createNativeAd(
         nativeAd: NativeAd?,
         customOptions: MutableMap<String, Any>?
     ): NativeAdView {
         view = LayoutInflater.from(context).inflate(resLayout, null)
-        nativeAdView = view?.findViewById(R.id.native_ad_view)
-        headlineView = view?.findViewById(R.id.tv_title)
-        mediaView = view?.findViewById(R.id.media_view)
-        bodyView = view?.findViewById(R.id.tv_description)
-        iconView = view?.findViewById(R.id.img_icon)
-        callToActionView = view?.findViewById(R.id.tv_install)
-        adLabelView = view?.findViewById(R.id.tv_ad_label)
-        nativeAdView?.apply {
-            this.mediaView = mediaView
+        nativeView = view?.findViewById(R.id.native_ad_view)
+        headlineV = view?.findViewById(R.id.tv_title)
+        mediaV = view?.findViewById(R.id.media_view)
+        bodyV = view?.findViewById(R.id.tv_description)
+        iconV = view?.findViewById(R.id.img_icon)
+        callToActionV = view?.findViewById(R.id.tv_install)
+        adLabelV = view?.findViewById(R.id.tv_ad_label)
+        nativeView?.apply {
+            this.mediaView = mediaV
             this.mediaView?.mediaContent = nativeAd?.mediaContent
-            this.headlineView = headlineView
-            this.bodyView = bodyView
-            this.iconView = iconView
-            this.callToActionView = callToActionView
+            this.headlineView = headlineV
+            this.bodyView = bodyV
+            this.iconView = iconV
+            this.callToActionView = callToActionV
         }
-        bodyView?.apply {
+        bodyV?.apply {
             isVisible = !nativeAd?.body.isNullOrEmpty()
             text = nativeAd?.body
         }
-        callToActionView?.apply {
+        callToActionV?.apply {
             text = nativeAd?.callToAction
             isVisible = !nativeAd?.callToAction.isNullOrEmpty()
         }
-        iconView?.apply {
+        iconV?.apply {
             setImageDrawable(nativeAd?.icon?.drawable)
             isVisible = nativeAd?.icon?.drawable != null
         }
-        headlineView?.text = nativeAd?.headline
+        headlineV?.text = nativeAd?.headline
 
-        nativeAd?.let { nativeAdView?.setNativeAd(it) }
-        return nativeAdView!!
+        nativeAd?.let { nativeView?.setNativeAd(it) }
+        return nativeView!!
     }
 }

@@ -10,7 +10,7 @@
         android:layout_height="match_parent">
 
         <com.google.android.gms.ads.nativead.MediaView
-            android:id="@+id/media_view"
+            android:id="@id/media_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="@dimen/_4sdp"
