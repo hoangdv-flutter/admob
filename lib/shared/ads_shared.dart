@@ -29,8 +29,6 @@ class AdShared {
 
   static const _fullscreenTimeGap = "fullScreenTimeGap";
 
-  static const _isPremium = "_isPremium";
-
   AdShared(this.sharedPreferences);
 
   int get lastTimeShowInterAds =>
@@ -103,17 +101,4 @@ class AdShared {
 
   set fullScreenTimeGap(value) =>
       sharedPreferences.setInt(_fullscreenTimeGap, value);
-
-  bool get isPremium => sharedPreferences.getBool(_isPremium) ?? false;
-
-  set isPremium(value) => sharedPreferences.setInt(_isPremium, value);
-
-  late final _isPremiumBS = BehaviorSubject.seeded(isPremium);
-
-  ValueStream<bool> get isPremiumStream => _isPremiumBS.stream;
-
-  @disposeMethod
-  void disposed() {
-    _isPremiumBS.close();
-  }
 }

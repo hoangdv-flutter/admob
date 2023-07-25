@@ -1,10 +1,11 @@
 import 'package:admob/ad_id/ad_id.dart';
 import 'package:admob/ad_loader_listener.dart';
 import 'package:admob/ads_loader.dart';
-import 'package:flutter_core/ext/di.dart';
 import 'package:admob/full_screen_ads_loader.dart';
 import 'package:admob/shared/ads_shared.dart';
 import 'package:admob/water_flow_manager/water_flow_manager.dart';
+import 'package:flutter_core/data/shared/premium_holder.dart';
+import 'package:flutter_core/ext/di.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:injectable/injectable.dart';
 
@@ -12,9 +13,12 @@ import 'package:injectable/injectable.dart';
 class InterstitialLoader extends FullScreenAdsLoader<InterstitialAd> {
   final AdShared _adShared;
 
+  final PremiumHolder _premiumHolder;
+
   final AdId adID;
 
-  InterstitialLoader(this._adShared, @Named(AdId.namedAdId) this.adID);
+  InterstitialLoader(
+      this._adShared, @Named(AdId.namedAdId) this.adID, this._premiumHolder);
 
   late final flow = WaterFlow(waterFlowIds: [
     adID.interHighAdUnitId,
@@ -56,7 +60,7 @@ class InterstitialLoader extends FullScreenAdsLoader<InterstitialAd> {
 
   @override
   Future<bool> show({AdLoaderListener? adLoaderListener}) async {
-    if (_adShared.isPremium) {
+    if (_premiumHolder.isPremium) {
       adLoaderListener?.onInterPassed?.call();
       return true;
     }

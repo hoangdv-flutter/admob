@@ -1,17 +1,18 @@
 import 'package:admob/ad_id/ad_id.dart';
 import 'package:admob/ads_loader.dart';
 import 'package:admob/shared/ads_shared.dart';
+import 'package:flutter_core/data/shared/premium_holder.dart';
 import 'package:flutter_core/ext/di.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:injectable/injectable.dart';
 
 @singleton
 class AppOpenAdsLoader {
-  final AdShared appShared;
+  final PremiumHolder _premiumHolder;
 
   final AdId adId;
 
-  AppOpenAdsLoader(this.appShared, @Named(AdId.namedAdId) this.adId) {
+  AppOpenAdsLoader(this._premiumHolder, @Named(AdId.namedAdId) this.adId) {
     loadAd();
   }
 
@@ -24,7 +25,7 @@ class AppOpenAdsLoader {
   bool get availableAd => _availableAd != null;
 
   Future<void> show({Function()? onShowed}) async {
-    if (appShared.isPremium) return;
+    if (_premiumHolder.isPremium) return;
     if (_availableAd == null) {
       loadAd();
       return;
@@ -58,7 +59,7 @@ class AppOpenAdsLoader {
   }
 
   Future<void> loadAd() async {
-    if (appShared.isPremium) return;
+    if (_premiumHolder.isPremium) return;
     if (!appInject<AdsLoader>().isInitial) return;
     if (_busy || availableAd) return;
     _busy = true;
