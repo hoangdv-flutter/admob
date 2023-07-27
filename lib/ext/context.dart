@@ -38,20 +38,21 @@ extension ContextExt on BuildContext {
   }
 
   popScreenWithAds<T extends Object?>(
-      {T? result, bool ignoreAds = false}) async {
+      {T? result, bool ignoreAds = false, Function()? onAdsDismiss}) async {
     try {
       if (Navigator.canPop(this)) {
         CrashlyticsLogger.logError(
             "pop screen ${widget.runtimeType.toString()}");
         if (ignoreAds) {
+          onAdsDismiss?.call();
           Navigator.of(this, rootNavigator: true).pop(result);
           return;
         }
         (appInject<InterstitialLoader>()).show(
-            adLoaderListener: AdLoaderListener(
-          onInterPassed: () =>
-              Navigator.of(this, rootNavigator: true).pop(result),
-        ));
+            adLoaderListener: AdLoaderListener(onInterPassed: () {
+          onAdsDismiss?.call();
+          Navigator.of(this, rootNavigator: true).pop(result);
+        }));
       }
     } catch (e) {}
   }
