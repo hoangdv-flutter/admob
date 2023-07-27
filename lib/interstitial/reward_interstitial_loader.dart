@@ -36,6 +36,8 @@ class RewardInterLoader extends FullScreenAdsLoader<RewardedInterstitialAd> {
         request: const AdRequest(httpTimeoutMillis: 30000),
         rewardedInterstitialAdLoadCallback: RewardedInterstitialAdLoadCallback(
           onAdLoaded: (ad) {
+            ad.fullScreenContentCallback =
+                getFullScreenContentCallback(adLoaderListener: adLoaderListener);
             onAdLoaded(ad);
             if (_showWhenReady) {
               show(adLoaderListener: adLoaderListener);
@@ -50,8 +52,6 @@ class RewardInterLoader extends FullScreenAdsLoader<RewardedInterstitialAd> {
   @override
   Future<void> onShow(RewardedInterstitialAd ads,
       {AdLoaderListener? adLoaderListener}) {
-    ads.fullScreenContentCallback =
-        getFullScreenContentCallback(adLoaderListener: adLoaderListener);
     return ads.show(
       onUserEarnedReward: (ad, reward) {
         FullScreenAdsLoader.isShowing = false;
