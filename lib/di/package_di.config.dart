@@ -71,7 +71,10 @@ extension GetItInjectableX on _i1.GetIt {
       dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i14.NativeAdsLoader>(
-      () => _i14.NativeAdsLoader(gh<_i3.AdId>(instanceName: 'globalAdId')),
+      () => _i14.NativeAdsLoader(
+        gh<_i3.AdId>(instanceName: 'globalAdId'),
+        gh<_i11.PremiumHolder>(),
+      ),
       dispose: (i) => i.dispose(),
     );
     gh.singleton<_i15.RewardInterLoader>(
