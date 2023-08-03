@@ -9,7 +9,9 @@ import 'package:flutter_core/util/crash_log.dart';
 
 extension ContextExt on BuildContext {
   Future<dynamic> pushScreenWithAds<T>(Route<T> route,
-      {bool ignoreAds = false, bool isReplacement = false}) async {
+      {bool ignoreAds = false,
+      bool isReplacement = false,
+      AdLoaderListener? adLoaderListener}) async {
     final completer = Completer<dynamic>();
     if (ignoreAds) {
       try {
@@ -20,38 +22,62 @@ extension ContextExt on BuildContext {
       } catch (e) {
         completer.complete(Response.failed(e));
       }
+      adLoaderListener?.onInterPassed?.call();
       return;
     }
-    (appInject<InterstitialLoader>()).show(adLoaderListener: AdLoaderListener(
-      onInterPassed: () async {
-        try {
-          final r = isReplacement
-              ? await Navigator.pushReplacement(this, route)
-              : await Navigator.push(this, route);
-          completer.complete(r);
-        } catch (e) {
-          completer.complete(Response.failed(e));
-        }
-      },
-    ));
+    (appInject<InterstitialLoader>()).show(
+        adLoaderListener: AdLoaderListener(onAdFailedToLoad: () {
+      adLoaderListener?.onAdFailedToLoad?.call();
+    }, onInterPassed: () async {
+      try {
+        final r = isReplacement
+            ? await Navigator.pushReplacement(this, route)
+            : await Navigator.push(this, route);
+        completer.complete(r);
+      } catch (e) {
+        completer.complete(Response.failed(e));
+      }
+      adLoaderListener?.onInterPassed?.call();
+    }, onAdConsume: () {
+      adLoaderListener?.onAdConsume?.call();
+    }, onAdStartShow: () {
+      adLoaderListener?.onAdStartShow?.call();
+    }, onAdClosed: () {
+      adLoaderListener?.onAdClosed?.call();
+    }, onAdFailedToShow: () {
+      adLoaderListener?.onAdFailedToShow?.call();
+    }));
+
     return await completer.future;
   }
 
   popScreenWithAds<T extends Object?>(
-      {T? result, bool ignoreAds = false, Function()? onAdsDismiss}) async {
+      {T? result,
+      bool ignoreAds = false,
+      AdLoaderListener? adLoaderListener}) async {
     try {
       if (Navigator.canPop(this)) {
         CrashlyticsLogger.logError(
             "pop screen ${widget.runtimeType.toString()}");
         if (ignoreAds) {
-          onAdsDismiss?.call();
           Navigator.of(this, rootNavigator: true).pop(result);
+          adLoaderListener?.onInterPassed?.call();
           return;
         }
         (appInject<InterstitialLoader>()).show(
-            adLoaderListener: AdLoaderListener(onInterPassed: () {
-          onAdsDismiss?.call();
+            adLoaderListener: AdLoaderListener(onAdFailedToLoad: () {
+          adLoaderListener?.onAdFailedToLoad?.call();
+        }, onInterPassed: () {
           Navigator.of(this, rootNavigator: true).pop(result);
+          adLoaderListener?.onInterPassed?.call();
+        }, onAdConsume: () {
+          adLoaderListener?.onAdConsume?.call();
+        }, onAdStartShow: () {
+          adLoaderListener?.onAdStartShow?.call();
+        }, onAdClosed: () {
+          adLoaderListener?.onAdClosed?.call();
+        }, onAdFailedToShow: () {
+          adLoaderListener?.onAdFailedToShow?.call();
         }));
       }
     } catch (e) {}

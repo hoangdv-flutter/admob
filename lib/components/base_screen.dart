@@ -13,8 +13,7 @@ abstract class AdsBaseScreen extends BaseScreen {
   }
 }
 
-abstract class AdsBaseScreenState<S extends StatefulWidget>
-    extends BaseScreenState<S> {
+abstract class AdsBaseScreenState<S extends StatefulWidget> extends BaseScreenState<S> {
   @override
   Future<bool> onBackPressed(BuildContext context) async {
     context.valid?.popScreenWithAds();
