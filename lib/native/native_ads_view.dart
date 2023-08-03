@@ -1,6 +1,8 @@
 import 'package:admob/presenter/native_ads_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_core/data/shared/premium_holder.dart';
+import 'package:flutter_core/ext/di.dart';
 import 'package:flutter_core/theme/app_theme.dart';
 import 'package:flutter_core/util/constant.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -30,31 +32,37 @@ abstract class NativeAdWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      builder: (context, snapshot) {
-        final adsState = snapshot.data?.state ?? DataState.idle;
-        final nativeAd = snapshot.data?.nativeAd;
-        return adsState == DataState.error
-            ? Container()
-            : Container(
-                height: adSize,
-                decoration: decoration,
-                padding: EdgeInsets.all(2.w),
-                margin: margin,
-                child: Center(
-                  child: adsState == DataState.loading
-                      ? buildLoading()
-                      : adsState == DataState.error
-                          ? const Text("error")
-                          : adsState == DataState.loaded && nativeAd != null
-                              ? AdWidget(ad: nativeAd)
-                              : Container(),
-                ),
-              );
-      },
-      stream: context
-          .read<NativeAdsCubit>()
-          .loadAds(nativeAdId, nativeAdFactory)
-          .nativeLoaderState,
+      stream: appInject<PremiumHolder>().isPremiumStream,
+      builder: (context, snapshot) => snapshot.data == true
+          ? Container()
+          : StreamBuilder(
+              builder: (context, snapshot) {
+                final adsState = snapshot.data?.state ?? DataState.idle;
+                final nativeAd = snapshot.data?.nativeAd;
+                return adsState == DataState.error
+                    ? Container()
+                    : Container(
+                        height: adSize,
+                        decoration: decoration,
+                        padding: EdgeInsets.all(2.w),
+                        margin: margin,
+                        child: Center(
+                          child: adsState == DataState.loading
+                              ? buildLoading()
+                              : adsState == DataState.error
+                                  ? const Text("error")
+                                  : adsState == DataState.loaded &&
+                                          nativeAd != null
+                                      ? AdWidget(ad: nativeAd)
+                                      : Container(),
+                        ),
+                      );
+              },
+              stream: context
+                  .read<NativeAdsCubit>()
+                  .loadAds(nativeAdId, nativeAdFactory)
+                  .nativeLoaderState,
+            ),
     );
   }
 

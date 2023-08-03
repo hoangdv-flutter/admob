@@ -1,5 +1,6 @@
 import 'package:admob/ad_id/ad_id.dart';
 import 'package:admob/ads_loader.dart';
+import 'package:flutter_core/data/shared/premium_holder.dart';
 import 'package:flutter_core/ext/di.dart';
 import 'package:admob/native/native_ads_factory.dart';
 import 'package:admob/native/native_loader_listener.dart';
@@ -15,16 +16,23 @@ class NativeAdsLoader {
 
   final loadedNativeAds = appInject<NativeAdsLoaded>();
 
+  final PremiumHolder premiumHolder;
+
   final listeners = <ObjectReference<NativeLoaderListener>>[];
 
   final lock = Lock(reentrant: true);
 
-  NativeAdsLoader(@Named(AdId.namedAdId) this.adId);
+  NativeAdsLoader(@Named(AdId.namedAdId) this.adId, this.premiumHolder);
 
   Future<void> fetchAds(String factoryID,
       ObjectReference<NativeLoaderListener> nativeLoaderListener) async {
     if (!appInject<AdsLoader>().isInitial) return;
     await lock.synchronized(() {
+      if (premiumHolder.isPremium) {
+        nativeLoaderListener.value?.onAdFailedToLoad?.call(LoadAdError(
+            1, "domain", "premium user!", const ResponseInfo(responseExtras: {})));
+        return;
+      }
       final availableAds = loadedNativeAds.getLoadedAds(factoryID);
       if (availableAds.isNotEmpty) {
         nativeLoaderListener.value?.onAdLoaded?.call(availableAds[0]);

@@ -12,9 +12,7 @@ class AppOpenAdsLoader {
 
   final AdId adId;
 
-  AppOpenAdsLoader(this._premiumHolder, @Named(AdId.namedAdId) this.adId) {
-    loadAd();
-  }
+  AppOpenAdsLoader(this._premiumHolder, @Named(AdId.namedAdId) this.adId);
 
   AppOpenAd? _availableAd;
 
