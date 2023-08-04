@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:admob/presenter/native_ads_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,15 +11,18 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shimmer/shimmer.dart';
 
-abstract class NativeAdWidget extends StatelessWidget {
+abstract class NativeAdWidget extends StatefulWidget {
   final String nativeAdId;
+
+  final Function()? onNativeError;
 
   const NativeAdWidget(
       {Key? key,
       required this.nativeAdId,
       required this.decoration,
       required this.margin,
-      required this.adSize})
+      required this.adSize,
+      this.onNativeError})
       : super(key: key);
 
   final BoxDecoration? decoration;
@@ -25,45 +30,71 @@ abstract class NativeAdWidget extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
 
   final double adSize;
+}
 
+abstract class NativeAdWidgetState extends State<NativeAdWidget> {
   @protected
   String get nativeAdFactory;
 
+  StreamSubscription? _premiumSubs;
+
+  StreamSubscription? _nativeStateSubs;
+
+  NativeAdLoaderState? _adLoaderState;
+
+  late final _premiumHolder = appInject<PremiumHolder>();
+
+  @override
+  void dispose() {
+    _premiumSubs?.cancel();
+    _nativeStateSubs?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    _premiumSubs = appInject<PremiumHolder>().isPremiumStream.listen((event) {
+      setState(() {});
+    });
+    _nativeStateSubs = context
+        .read<NativeAdsCubit>()
+        .loadAds(widget.nativeAdId, nativeAdFactory)
+        .nativeLoaderState
+        .listen((event) {
+      setState(() {
+        if (event.state == DataState.error) {
+          widget.onNativeError?.call();
+        }
+        _adLoaderState = event;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: appInject<PremiumHolder>().isPremiumStream,
-      builder: (context, snapshot) => snapshot.data == true
-          ? Container()
-          : StreamBuilder(
-              builder: (context, snapshot) {
-                final adsState = snapshot.data?.state ?? DataState.idle;
-                final nativeAd = snapshot.data?.nativeAd;
-                return adsState == DataState.error
-                    ? Container()
-                    : Container(
-                        height: adSize,
-                        decoration: decoration,
-                        padding: EdgeInsets.all(2.w),
-                        margin: margin,
-                        child: Center(
-                          child: adsState == DataState.loading
-                              ? buildLoading()
-                              : adsState == DataState.error
-                                  ? const Text("error")
-                                  : adsState == DataState.loaded &&
-                                          nativeAd != null
-                                      ? AdWidget(ad: nativeAd)
-                                      : Container(),
-                        ),
-                      );
-              },
-              stream: context
-                  .read<NativeAdsCubit>()
-                  .loadAds(nativeAdId, nativeAdFactory)
-                  .nativeLoaderState,
+    if (_premiumHolder.isPremium) return Container();
+    final adsState = _adLoaderState?.state ?? DataState.idle;
+    final nativeAd = _adLoaderState?.nativeAd;
+    return adsState == DataState.error
+        ? Container(
+            height: 2.h,
+          )
+        : Container(
+            height: widget.adSize,
+            decoration: widget.decoration,
+            padding: EdgeInsets.all(2.w),
+            margin: widget.margin,
+            child: Center(
+              child: adsState == DataState.loading
+                  ? buildLoading()
+                  : adsState == DataState.error
+                      ? const Text("error")
+                      : adsState == DataState.loaded && nativeAd != null
+                          ? AdWidget(ad: nativeAd)
+                          : Container(),
             ),
-    );
+          );
   }
 
   Widget buildLoading() {

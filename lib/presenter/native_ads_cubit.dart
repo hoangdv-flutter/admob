@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_core/ext/di.dart';
 import 'package:admob/native/native_ads_loader.dart';
 import 'package:admob/native/native_loader_listener.dart';
@@ -25,6 +26,7 @@ class NativeAdsCubit extends Cubit {
           call: (value) => nativeLoaderMap[requestId] = value,
         ));
     if (requester.state != DataState.idle) {
+      debugPrint("native ad old State ${requester.state}");
       return requester;
     }
     nativeAdLoader.fetchAds(factoryId, requester.listener);
