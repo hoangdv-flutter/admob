@@ -18,7 +18,8 @@ class AdsLoader {
     MobileAds.instance.updateRequestConfiguration(RequestConfiguration(
         testDeviceIds: [
           '2F4D0760CC76965FA11B704EB25F30A7',
-          '987E51C0FF974F2007128FBAAAAA201A'
+          '987E51C0FF974F2007128FBAAAAA201A',
+          '812201C6E5F501E98EA1298F4A034968'
         ]));
     await MobileAds.instance.initialize().then((value) {
       isInitial = true;
