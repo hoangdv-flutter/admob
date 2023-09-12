@@ -2,6 +2,7 @@ import 'package:admob/ad_id/ad_id.dart';
 import 'package:admob/ad_loader_listener.dart';
 import 'package:admob/ads_loader.dart';
 import 'package:admob/full_screen_ads_loader.dart';
+import 'package:admob/listener/global_listener.dart';
 import 'package:admob/shared/ads_shared.dart';
 import 'package:admob/water_flow_manager/water_flow_manager.dart';
 import 'package:flutter_core/data/shared/premium_holder.dart';
@@ -29,6 +30,7 @@ class InterstitialLoader extends FullScreenAdsLoader<InterstitialAd> {
   @override
   void onAdLoaded(InterstitialAd ads) {
     super.onAdLoaded(ads);
+    ads.onPaidEvent = GlobalAdListener.onPaidEventCallback;
     flow.reset();
   }
 

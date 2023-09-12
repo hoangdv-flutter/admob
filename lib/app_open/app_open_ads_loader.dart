@@ -1,5 +1,6 @@
 import 'package:admob/ad_id/ad_id.dart';
 import 'package:admob/ads_loader.dart';
+import 'package:admob/listener/global_listener.dart';
 import 'package:admob/shared/ads_shared.dart';
 import 'package:flutter_core/data/shared/premium_holder.dart';
 import 'package:flutter_core/ext/di.dart';
@@ -66,7 +67,10 @@ class AppOpenAdsLoader {
         adUnitId: adId.appOpenAdUnitId,
         request: const AdRequest(),
         adLoadCallback: AppOpenAdLoadCallback(
-          onAdLoaded: (ad) => _availableAd = ad,
+          onAdLoaded: (ad) {
+            _availableAd = ad;
+            ad.onPaidEvent = GlobalAdListener.onPaidEventCallback;
+          },
           onAdFailedToLoad: (error) {},
         ),
         orientation: AppOpenAd.orientationPortrait);

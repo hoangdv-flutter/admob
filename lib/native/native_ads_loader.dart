@@ -1,10 +1,11 @@
 import 'package:admob/ad_id/ad_id.dart';
 import 'package:admob/ads_loader.dart';
-import 'package:flutter_core/data/shared/premium_holder.dart';
-import 'package:flutter_core/ext/di.dart';
+import 'package:admob/listener/global_listener.dart';
 import 'package:admob/native/native_ads_factory.dart';
 import 'package:admob/native/native_loader_listener.dart';
 import 'package:flutter_core/data/obj_references.dart';
+import 'package:flutter_core/data/shared/premium_holder.dart';
+import 'package:flutter_core/ext/di.dart';
 import 'package:flutter_core/ext/list.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:injectable/injectable.dart';
@@ -29,8 +30,8 @@ class NativeAdsLoader {
     if (!appInject<AdsLoader>().isInitial) return;
     await lock.synchronized(() {
       if (premiumHolder.isPremium) {
-        nativeLoaderListener.value?.onAdFailedToLoad?.call(LoadAdError(
-            1, "domain", "premium user!", const ResponseInfo(responseExtras: {})));
+        nativeLoaderListener.value?.onAdFailedToLoad?.call(LoadAdError(1,
+            "domain", "premium user!", const ResponseInfo(responseExtras: {})));
         return;
       }
       final availableAds = loadedNativeAds.getLoadedAds(factoryID);
@@ -53,13 +54,14 @@ class NativeAdsLoader {
               adUnitId: adId.nativeAdUnitID,
               factoryId: factoryID,
               listener: NativeAdListener(
-                onAdFailedToLoad: (ad, error) {
-                  _onAdFailedToLoad(ad, error, nativeLoaderListener);
-                },
-                onAdLoaded: (ad) {
-                  _onAdLoaded(factoryID, ad as NativeAd, nativeLoaderListener);
-                },
-              ),
+                  onAdFailedToLoad: (ad, error) {
+                    _onAdFailedToLoad(ad, error, nativeLoaderListener);
+                  },
+                  onAdLoaded: (ad) {
+                    _onAdLoaded(
+                        factoryID, ad as NativeAd, nativeLoaderListener);
+                  },
+                  onPaidEvent: GlobalAdListener.onPaidEventCallback),
               nativeAdOptions: NativeAdOptions(
                   videoOptions: VideoOptions(
                       startMuted: true, customControlsRequested: false)),
