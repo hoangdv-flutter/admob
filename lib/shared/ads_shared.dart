@@ -17,7 +17,7 @@ class AdShared {
 
   static const _minGapWaterFloorAds = "minGapWaterFloorAds";
 
-  static const _maxGapWaterFloorAds = "minGapWaterFloorAds";
+  static const _maxGapWaterFloorAds = "maxGapWaterFloorAds";
 
   static const _ignoredGapThreshold = "ignoreGapThreshold";
 
