@@ -21,7 +21,7 @@ dependencies:
   flutter_core:
     path: ../flutter_core/
   synchronized: ^3.1.0
-  firebase_remote_config: ^4.2.4
+  firebase_remote_config: any
 
 dev_dependencies:
   flutter_test:
