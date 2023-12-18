@@ -10,6 +10,11 @@ abstract class AdmobPlatform extends PlatformInterface {
 
   static AdmobPlatform _instance = MethodChannelAdmob();
 
+  Stream<dynamic> get onRequestInitAdSdk;
+
+
+  Stream<dynamic> get onConsentDismiss;
+
   /// The default instance of [AdmobPlatform] to use.
   ///
   /// Defaults to [MethodChannelAdmob].
@@ -22,6 +27,8 @@ abstract class AdmobPlatform extends PlatformInterface {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
   }
+
+  void applyMethodChannel();
 
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');

@@ -1,18 +1,43 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'admob_platform_interface.dart';
 
 /// An implementation of [AdmobPlatform] that uses method channels.
+///
 class MethodChannelAdmob extends AdmobPlatform {
   /// The method channel used to interact with the native platform.
   @visibleForTesting
   final methodChannel = const MethodChannel('admob');
 
-  MethodChannelAdmob() {
+  late final _onRequestInitAdSdk = BehaviorSubject();
+
+  @override
+  Stream<dynamic> get onRequestInitAdSdk => _onRequestInitAdSdk.stream;
+
+  late final _onConsentDismiss = BehaviorSubject();
+
+  @override
+  Stream<dynamic> get onConsentDismiss => _onConsentDismiss.stream;
+
+  MethodChannelAdmob(){
     methodChannel.setMethodCallHandler((call) async {
-      print("call from method ${call.method}");
+      switch (call.method) {
+        case PluginMethods.onConsentDismiss:
+          _onConsentDismiss.add("");
+          break;
+
+        case PluginMethods.onRequestInitAdSdk:
+          _onRequestInitAdSdk.add("");
+          break;
+      }
     });
+  }
+
+  @override
+  void applyMethodChannel() {
+
   }
 
   @override
@@ -21,4 +46,9 @@ class MethodChannelAdmob extends AdmobPlatform {
         await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
   }
+}
+
+class PluginMethods {
+  static const onConsentDismiss = "onConsentDismiss";
+  static const onRequestInitAdSdk = "onRequestInitAdSdk";
 }

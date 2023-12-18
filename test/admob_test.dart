@@ -10,6 +10,17 @@ class MockAdmobPlatform
 
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
+
+  @override
+  void applyMethodChannel() {
+    // TODO: implement applyMethodChannel
+  }
+
+  @override
+  Stream get onConsentDismiss => throw UnimplementedError();
+
+  @override
+  Stream get onRequestInitAdSdk => throw UnimplementedError();
 }
 
 void main() {

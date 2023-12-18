@@ -41,13 +41,15 @@ class AdmobPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activity = binding.activity
-        UserConsentRequester.requestConsentInformation(activity ?: return,
+        UserConsentRequester.requestConsentInformation(
+            channel, activity ?: return/*,
             onConsentRequestDismiss = {
                 channel.invokeMethod(PluginMethods.onConsentDismiss, null)
             },
             onRequestInitAdSdk = {
                 channel.invokeMethod(PluginMethods.onRequestInitAdSdk, null)
-            })
+            }*/
+        )
     }
 
     override fun onDetachedFromActivityForConfigChanges() {

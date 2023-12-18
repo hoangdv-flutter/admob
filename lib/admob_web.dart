@@ -23,4 +23,14 @@ class AdmobWeb extends AdmobPlatform {
     final version = html.window.navigator.userAgent;
     return version;
   }
+
+  @override
+  void applyMethodChannel() {
+  }
+
+  @override
+  Stream get onConsentDismiss => throw UnimplementedError();
+
+  @override
+  Stream get onRequestInitAdSdk => throw UnimplementedError();
 }
