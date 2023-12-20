@@ -4,6 +4,8 @@ import 'package:admob/app_open/app_open_ads_loader.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:injectable/injectable.dart';
 
+import 'admob_platform_interface.dart';
+
 @singleton
 class AdsLoader {
   var isInitial = false;
@@ -15,11 +17,10 @@ class AdsLoader {
   var _initializing = false;
 
   AdsLoader(this._appOpenAdsLoader) {
-    // AdmobPlatform.instance.applyMethodChannel();
-    // _methodSubs = AdmobPlatform.instance.onRequestInitAdSdk.listen((event) {
-    //   _init();
-    // });
-    _init();
+    AdmobPlatform.instance.applyMethodChannel();
+    _methodSubs = AdmobPlatform.instance.onRequestInitAdSdk.listen((event) {
+      _init();
+    });
   }
 
   Future<void> _init() async {

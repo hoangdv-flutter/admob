@@ -74,12 +74,10 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
   @override
   Widget build(BuildContext context) {
     if (_premiumHolder.isPremium) return Container();
-    final adsState = _adLoaderState?.state ?? DataState.idle;
+    final adsState = _adLoaderState?.state ?? DataState.error;
     final nativeAd = _adLoaderState?.nativeAd;
     return adsState == DataState.error
-        ? Container(
-            height: 2.h,
-          )
+        ? Container()
         : Container(
             height: widget.adSize,
             decoration: widget.decoration,

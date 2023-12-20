@@ -28,10 +28,21 @@ class AdmobPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-        if (call.method == "getPlatformVersion") {
-            result.success("Android ${android.os.Build.VERSION.RELEASE}")
-        } else {
-            result.notImplemented()
+        when (call.method) {
+            "getPlatformVersion" -> {
+                result.success("Android ${android.os.Build.VERSION.RELEASE}")
+            }
+
+            PluginMethods.showConsentForm -> {
+                UserConsentRequester.requestConsentInformation(
+                    channel, activity ?: return
+                )
+                result.success(1)
+            }
+
+            else -> {
+                result.notImplemented()
+            }
         }
     }
 
@@ -41,15 +52,6 @@ class AdmobPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activity = binding.activity
-        UserConsentRequester.requestConsentInformation(
-            channel, activity ?: return/*,
-            onConsentRequestDismiss = {
-                channel.invokeMethod(PluginMethods.onConsentDismiss, null)
-            },
-            onRequestInitAdSdk = {
-                channel.invokeMethod(PluginMethods.onRequestInitAdSdk, null)
-            }*/
-        )
     }
 
     override fun onDetachedFromActivityForConfigChanges() {

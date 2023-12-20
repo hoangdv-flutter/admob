@@ -21,24 +21,25 @@ class MethodChannelAdmob extends AdmobPlatform {
   @override
   Stream<dynamic> get onConsentDismiss => _onConsentDismiss.stream;
 
-  MethodChannelAdmob(){
+  MethodChannelAdmob() {
     methodChannel.setMethodCallHandler((call) async {
       switch (call.method) {
         case PluginMethods.onConsentDismiss:
+          print("Ad Consent State onConsentDismiss");
           _onConsentDismiss.add("");
           break;
 
         case PluginMethods.onRequestInitAdSdk:
+          print("Ad Consent State onRequestInitAdSdk");
           _onRequestInitAdSdk.add("");
           break;
       }
     });
+    methodChannel.invokeMethod(PluginMethods.showConsentForm);
   }
 
   @override
-  void applyMethodChannel() {
-
-  }
+  void applyMethodChannel() {}
 
   @override
   Future<String?> getPlatformVersion() async {
@@ -51,4 +52,5 @@ class MethodChannelAdmob extends AdmobPlatform {
 class PluginMethods {
   static const onConsentDismiss = "onConsentDismiss";
   static const onRequestInitAdSdk = "onRequestInitAdSdk";
+  static const showConsentForm = "showConsentForm";
 }
