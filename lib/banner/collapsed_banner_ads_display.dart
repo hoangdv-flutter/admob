@@ -8,14 +8,14 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shimmer/shimmer.dart';
 
-class BannerWidget extends StatefulWidget {
-  const BannerWidget({Key? key}) : super(key: key);
+class CollapsedBannerWidget extends StatefulWidget {
+  const CollapsedBannerWidget({super.key});
 
   @override
-  State<BannerWidget> createState() => _BannerWidgetState();
+  State<CollapsedBannerWidget> createState() => _BannerWidgetState();
 }
 
-class _BannerWidgetState extends BaseState<BannerWidget> {
+class _BannerWidgetState extends BaseState<CollapsedBannerWidget> {
   BannerAdsLoader? _bannerAdLoader;
 
   @override
@@ -77,7 +77,7 @@ class _BannerWidgetState extends BaseState<BannerWidget> {
 
   Widget _buildAds(BuildContext context) {
     _bannerAdLoader = appInject<BannerAdsLoader>();
-    _bannerAdLoader?.load();
+    _bannerAdLoader?.load(extras: {"collapsible": "bottom"});
     return StreamBuilder(
       builder: (context, snapshot) => Container(
         color: Colors.white,
