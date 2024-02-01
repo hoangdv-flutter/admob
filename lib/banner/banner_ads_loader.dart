@@ -18,9 +18,13 @@ class BannerAdsLoader extends Executable {
 
   BannerAd? _bannerAd;
 
+  bool _loadable = true;
+
   final AdId adId;
 
   void load({Map<String,String>? extras}){
+    if(!_loadable) return;
+    _loadable = false;
     if (!appInject<AdsLoader>().isInitial) return;
     BannerAd(
         size: AdSize.banner,

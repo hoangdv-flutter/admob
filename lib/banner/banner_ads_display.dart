@@ -9,7 +9,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shimmer/shimmer.dart';
 
 class BannerWidget extends StatefulWidget {
-  const BannerWidget({Key? key}) : super(key: key);
+  const BannerWidget({super.key});
 
   @override
   State<BannerWidget> createState() => _BannerWidgetState();

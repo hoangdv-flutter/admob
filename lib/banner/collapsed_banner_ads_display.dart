@@ -16,12 +16,11 @@ class CollapsedBannerWidget extends StatefulWidget {
 }
 
 class _BannerWidgetState extends BaseState<CollapsedBannerWidget> {
-  BannerAdsLoader? _bannerAdLoader;
+  final BannerAdsLoader _bannerAdLoader = appInject<BannerAdsLoader>();
 
   @override
   Widget build(BuildContext context) {
     final premiumCubit = PremiumCubit();
-    _bannerAdLoader?.dispose();
     return BlocProvider(
       create: (context) => premiumCubit,
       lazy: false,
@@ -71,13 +70,12 @@ class _BannerWidgetState extends BaseState<CollapsedBannerWidget> {
 
   @override
   void dispose() {
-    _bannerAdLoader?.dispose();
+    _bannerAdLoader.dispose();
     super.dispose();
   }
 
   Widget _buildAds(BuildContext context) {
-    _bannerAdLoader = appInject<BannerAdsLoader>();
-    _bannerAdLoader?.load(extras: {"collapsible": "bottom"});
+    _bannerAdLoader.load(extras: {"collapsible": "bottom"});
     return StreamBuilder(
       builder: (context, snapshot) => Container(
         color: Colors.white,
