@@ -4,8 +4,10 @@ import 'package:admob/listener/global_listener.dart';
 import 'package:admob/shared/ads_shared.dart';
 import 'package:flutter_core/data/shared/premium_holder.dart';
 import 'package:flutter_core/ext/di.dart';
+import 'package:flutter_core/ext/stream.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:injectable/injectable.dart';
+import 'package:rxdart/rxdart.dart';
 
 @singleton
 class AppOpenAdsLoader {
@@ -16,6 +18,10 @@ class AppOpenAdsLoader {
   AppOpenAdsLoader(this._premiumHolder, @Named(AdId.namedAdId) this.adId);
 
   AppOpenAd? _availableAd;
+
+  final BehaviorSubject<bool> _adShowingState = BehaviorSubject.seeded(false);
+
+  ValueStream<bool> get adShowingState => _adShowingState.stream;
 
   static var isShowing = false;
 
@@ -35,12 +41,14 @@ class AppOpenAdsLoader {
       ?..fullScreenContentCallback = FullScreenContentCallback(
         onAdShowedFullScreenContent: (ad) {
           isShowing = true;
+          _adShowingState.addSafety(true);
           adShared.lastTimeLoadAds = DateTime.now().millisecondsSinceEpoch;
           adShared.lastTimeShowAppOpenAds =
               DateTime.now().millisecondsSinceEpoch;
         },
         onAdFailedToShowFullScreenContent: (ad, error) {
           isShowing = false;
+          _adShowingState.addSafety(false);
           ad.dispose();
           loadAd();
           onShowed?.call();
@@ -48,6 +56,7 @@ class AppOpenAdsLoader {
         },
         onAdDismissedFullScreenContent: (ad) {
           isShowing = false;
+          _adShowingState.addSafety(false);
           adShared.lastTimeShowAppOpenAds =
               DateTime.now().millisecondsSinceEpoch;
           onShowed?.call();
@@ -71,7 +80,9 @@ class AppOpenAdsLoader {
             _availableAd = ad;
             ad.onPaidEvent = GlobalAdListener.onPaidEventCallback;
           },
-          onAdFailedToLoad: (error) {},
+          onAdFailedToLoad: (error) {
+            print("Open app ads loaded failed ${error.message}");
+          },
         ),
         orientation: AppOpenAd.orientationPortrait);
     _busy = false;
@@ -83,6 +94,7 @@ class AppOpenAdsLoader {
   }
 
   void _clearAds() {
+    _adShowingState.close();
     _availableAd?.dispose();
     _availableAd = null;
   }

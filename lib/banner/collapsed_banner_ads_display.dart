@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:admob/app_open/app_open_ads_loader.dart';
 import 'package:admob/banner/banner_ads_loader.dart';
 import 'package:admob/presenter/premium_cubit.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +21,29 @@ class CollapsedBannerWidget extends StatefulWidget {
 class _BannerWidgetState extends BaseState<CollapsedBannerWidget> {
   final BannerAdsLoader _bannerAdLoader = appInject<BannerAdsLoader>();
 
+  var needToShow = true;
+
+  StreamSubscription? _appOpenShowingSubs;
+
+  @override
+  void initState() {
+    super.initState();
+    _appOpenShowingSubs =
+        appInject<AppOpenAdsLoader>().adShowingState.listen((event) {
+      setState(() {
+        needToShow = !event;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (!needToShow) {
+      print("Banner Show Container");
+      return Container();
+    } else {
+      print("Banner Show Ads");
+    }
     final premiumCubit = PremiumCubit();
     return BlocProvider(
       create: (context) => premiumCubit,
@@ -71,6 +95,7 @@ class _BannerWidgetState extends BaseState<CollapsedBannerWidget> {
   @override
   void dispose() {
     _bannerAdLoader.dispose();
+    _appOpenShowingSubs?.cancel();
     super.dispose();
   }
 
