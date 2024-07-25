@@ -45,9 +45,8 @@ class _BannerWidgetState extends BaseState<CollapsedBannerWidget> {
       print("Banner Show Ads");
     }
     final premiumCubit = PremiumCubit();
-    return BlocProvider(
-      create: (context) => premiumCubit,
-      lazy: false,
+    return BlocProvider.value(
+      value: premiumCubit,
       child: StreamBuilder(
         builder: (context, snapshot) =>
             snapshot.data != true ? _buildAds(context) : Container(),

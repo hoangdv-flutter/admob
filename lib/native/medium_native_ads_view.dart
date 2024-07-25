@@ -2,8 +2,7 @@ import 'package:admob/presenter/native_ads_cubit.dart';
 import 'package:admob/presenter/premium_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_core/index.dart';
-import 'package:flutter_core/util/constant.dart';
+import 'package:flutter_core/core.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shimmer/shimmer.dart';
@@ -30,13 +29,12 @@ class MediumNativeAdsBanner extends StatefulWidget {
 }
 
 class _MediumNativeAdsBannerState extends BaseState<MediumNativeAdsBanner> {
+  late final premiumCubit = PremiumCubit();
+
   @override
   Widget build(BuildContext context) {
-    final premiumCubit = PremiumCubit();
-
-    return BlocProvider(
-      create: (context) => premiumCubit,
-      lazy: false,
+    return BlocProvider.value(
+      value: premiumCubit,
       child: StreamBuilder(
         builder: (context, snapshot) =>
             snapshot.data != true ? _buildAds() : Container(),

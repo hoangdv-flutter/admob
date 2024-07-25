@@ -83,8 +83,7 @@ class AppOpenAdsLoader {
           onAdFailedToLoad: (error) {
             print("Open app ads loaded failed ${error.message}");
           },
-        ),
-        orientation: AppOpenAd.orientationPortrait);
+        ));
     _busy = false;
   }
 

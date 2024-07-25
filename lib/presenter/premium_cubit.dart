@@ -1,6 +1,6 @@
+import 'package:flutter_core/core.dart';
 import 'package:flutter_core/data/shared/premium_holder.dart';
 import 'package:flutter_core/ext/di.dart';
-import 'package:flutter_core/presenter/base_cubit.dart';
 import 'package:rxdart/rxdart.dart';
 
 class PremiumCubit extends BaseCubit {

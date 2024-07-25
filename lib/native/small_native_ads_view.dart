@@ -1,8 +1,8 @@
 import 'package:admob/presenter/native_ads_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_core/core.dart';
 import 'package:flutter_core/index.dart';
 import 'package:flutter_core/theme/app_theme.dart';
-import 'package:flutter_core/util/constant.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shimmer/shimmer.dart';
