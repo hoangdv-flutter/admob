@@ -87,7 +87,7 @@ class AdShared {
       sharedPreferences.setBool(_isMonetization, value);
 
   int get interstitialGap =>
-      sharedPreferences.getInt(_interstitialGap) ?? 50000;
+      sharedPreferences.getInt(_interstitialGap) ?? 60000;
 
   set interstitialGap(value) =>
       sharedPreferences.setInt(_interstitialGap, value);
