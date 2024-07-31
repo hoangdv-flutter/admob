@@ -40,7 +40,7 @@ class BannerAdsLoader extends Executable {
             _bannerAdStreamController.addErrorSafety(error);
           },
         ),
-        request:  AdRequest(httpTimeoutMillis: 30000,extras: extras ?? {}))
+        request: AdRequest(httpTimeoutMillis: 30000,extras: extras ?? {}))
         .load();
   }
 

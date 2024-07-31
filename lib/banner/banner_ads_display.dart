@@ -8,23 +8,25 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shimmer/shimmer.dart';
 
+enum CollapsibleDirection { top, bottom }
+
 class BannerWidget extends StatefulWidget {
-  const BannerWidget({super.key});
+  final CollapsibleDirection? collapsibleDirection;
+
+  const BannerWidget({super.key, this.collapsibleDirection});
 
   @override
   State<BannerWidget> createState() => _BannerWidgetState();
 }
 
 class _BannerWidgetState extends BaseState<BannerWidget> {
-  BannerAdsLoader? _bannerAdLoader;
+  late final BannerAdsLoader _bannerAdLoader = appInject<BannerAdsLoader>();
 
   @override
   Widget build(BuildContext context) {
     final premiumCubit = PremiumCubit();
-    _bannerAdLoader?.dispose();
-    return BlocProvider(
-      create: (context) => premiumCubit,
-      lazy: false,
+    return BlocProvider.value(
+      value: premiumCubit,
       child: StreamBuilder(
         builder: (context, snapshot) =>
             snapshot.data != true ? _buildAds(context) : Container(),
@@ -71,13 +73,15 @@ class _BannerWidgetState extends BaseState<BannerWidget> {
 
   @override
   void dispose() {
-    _bannerAdLoader?.dispose();
+    _bannerAdLoader.dispose();
     super.dispose();
   }
 
   Widget _buildAds(BuildContext context) {
-    _bannerAdLoader = appInject<BannerAdsLoader>();
-    _bannerAdLoader?.load();
+    _bannerAdLoader.load(
+        extras: widget.collapsibleDirection != null
+            ? {"collapsible": "${widget.collapsibleDirection?.name}"}
+            : null);
     return StreamBuilder(
       builder: (context, snapshot) => Container(
         color: Colors.white,
@@ -88,7 +92,7 @@ class _BannerWidgetState extends BaseState<BannerWidget> {
                 ? Container()
                 : _buildLoading(),
       ),
-      stream: _bannerAdLoader?.bannerAd,
+      stream: _bannerAdLoader.bannerAd,
     );
   }
 }
