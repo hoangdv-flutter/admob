@@ -4,31 +4,31 @@ version: 0.0.1
 homepage:
 
 environment:
-  sdk: '>=3.0.5 <4.0.0'
+  sdk: '>=3.4.1 <4.0.0'
   flutter: ">=3.3.0"
 
 dependencies:
   flutter:
     sdk: flutter
   google_mobile_ads: any
-  get_it: ^7.2.0
-  injectable: ^2.1.2
-  shared_preferences: ^2.2.0
-  rxdart: ^0.27.7
-  flutter_bloc: ^8.1.3
-  shimmer: ^3.0.0
-  responsive_sizer: ^3.1.1
+  get_it: any
+  injectable: any
+  shared_preferences: any
+  rxdart: any
+  flutter_bloc: any
+  shimmer: any
+  responsive_sizer: any
   flutter_core:
     path: ../flutter_core/
-  synchronized: ^3.1.0
+  synchronized: any
   firebase_remote_config: any
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
-  injectable_generator: ^2.1.1
-  build_runner: ^2.1.2
+  flutter_lints: any
+  injectable_generator: any
+  build_runner: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

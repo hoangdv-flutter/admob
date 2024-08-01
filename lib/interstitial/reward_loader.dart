@@ -1,14 +1,15 @@
 part of 'interstitial_ad.dart';
 
-
 @singleton
-class RewardInterLoader extends FullScreenAdsLoader<RewardedInterstitialAd> {
-  RewardInterLoader(@Named(AdId.namedAdId) this.adId);
+class RewardLoader extends FullScreenAdsLoader<RewardedAd> {
+  RewardLoader(@Named(AdId.namedAdId) this.adId);
+
+  static const timeoutMillis = 10000;
 
   @disposeMethod
   @override
   dispose() {
-    _showWhenReady = false;
+    cancel();
     super.dispose();
   }
 
@@ -17,7 +18,7 @@ class RewardInterLoader extends FullScreenAdsLoader<RewardedInterstitialAd> {
   bool _showWhenReady = false;
 
   @override
-  void onAdLoaded(RewardedInterstitialAd ads) {
+  void onAdLoaded(RewardedAd ads) {
     ads.onPaidEvent = GlobalAdListener.onPaidEventCallback;
     super.onAdLoaded(ads);
   }
@@ -29,14 +30,27 @@ class RewardInterLoader extends FullScreenAdsLoader<RewardedInterstitialAd> {
     return super.show(adLoaderListener: adLoaderListener);
   }
 
+  void cancel() {
+    _showWhenReady = false;
+  }
+
   @override
   Future<void> onLoad({AdLoaderListener? adLoaderListener}) async {
-    _showWhenReady = false;
-    await RewardedInterstitialAd.load(
-        adUnitId: adId.rewardedInterAdUnitId,
-        request: const AdRequest(httpTimeoutMillis: 30000),
-        rewardedInterstitialAdLoadCallback: RewardedInterstitialAdLoadCallback(
+    _showWhenReady = true;
+    final timer = Timer.periodic(
+      const Duration(milliseconds: timeoutMillis),
+      (timer) {
+        cancel();
+        onAdFailedToLoad(adLoaderListener: adLoaderListener);
+        timer.cancel();
+      },
+    );
+    await RewardedAd.load(
+        adUnitId: adId.rewardedAdUnitId,
+        request: const AdRequest(httpTimeoutMillis: timeoutMillis),
+        rewardedAdLoadCallback: RewardedAdLoadCallback(
           onAdLoaded: (ad) {
+            timer.cancel();
             ad.fullScreenContentCallback = getFullScreenContentCallback(
                 adLoaderListener: adLoaderListener);
             onAdLoaded(ad);
@@ -45,17 +59,16 @@ class RewardInterLoader extends FullScreenAdsLoader<RewardedInterstitialAd> {
             }
           },
           onAdFailedToLoad: (error) {
+            timer.cancel();
             onAdFailedToLoad(adLoaderListener: adLoaderListener);
           },
         ));
   }
 
   @override
-  Future<void> onShow(RewardedInterstitialAd ads,
-      {AdLoaderListener? adLoaderListener}) {
+  Future<void> onShow(RewardedAd ads, {AdLoaderListener? adLoaderListener}) {
     return ads.show(
       onUserEarnedReward: (ad, reward) {
-        FullScreenAdsLoader.isShowing = false;
         adLoaderListener?.onAdConsume?.call();
       },
     );

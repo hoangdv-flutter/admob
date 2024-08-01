@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:admob/ad_loader_listener.dart';
-import 'package:admob/interstitial/interstititial_loader.dart';
+import 'package:admob/admob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_core/core.dart';
 import 'package:flutter_core/data/response.dart';

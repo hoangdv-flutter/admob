@@ -49,6 +49,7 @@ abstract class FullScreenAdsLoader<T extends Ad> {
           adLoaderListener?.onAdClosed?.call();
           adLoaderListener?.onInterPassed?.call();
           ad.dispose();
+          availableAds = null;
           onLoadNextAds();
           appInject<AdShared>().lastTimeShowInterAds =
               DateTime.now().millisecondsSinceEpoch;

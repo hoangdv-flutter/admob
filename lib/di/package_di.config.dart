@@ -16,8 +16,7 @@ import 'package:admob/app_lifecycle_reactor.dart' as _i1027;
 import 'package:admob/app_open/app_open_ads_loader.dart' as _i273;
 import 'package:admob/banner/banner_ads_loader.dart' as _i661;
 import 'package:admob/data/firebase_remote_datasource.dart' as _i987;
-import 'package:admob/interstitial/interstititial_loader.dart' as _i159;
-import 'package:admob/interstitial/reward_interstitial_loader.dart' as _i515;
+import 'package:admob/interstitial/interstitial_ad.dart' as _i318;
 import 'package:admob/native/native_ads_factory.dart' as _i212;
 import 'package:admob/native/native_ads_loader.dart' as _i598;
 import 'package:admob/shared/ads_shared.dart' as _i484;
@@ -51,8 +50,12 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       instanceName: 'globalAdId',
     );
-    gh.singleton<_i515.RewardInterLoader>(
-      () => _i515.RewardInterLoader(gh<_i837.AdId>(instanceName: 'globalAdId')),
+    gh.singleton<_i318.RewardInterLoader>(
+      () => _i318.RewardInterLoader(gh<_i837.AdId>(instanceName: 'globalAdId')),
+      dispose: (i) => i.dispose(),
+    );
+    gh.singleton<_i318.RewardLoader>(
+      () => _i318.RewardLoader(gh<_i837.AdId>(instanceName: 'globalAdId')),
       dispose: (i) => i.dispose(),
     );
     gh.factory<_i661.BannerAdsLoader>(() =>
@@ -66,8 +69,8 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       dispose: (i) => i.dispose(),
     );
-    gh.lazySingleton<_i159.InterstitialLoader>(
-      () => _i159.InterstitialLoader(
+    gh.lazySingleton<_i318.InterstitialLoader>(
+      () => _i318.InterstitialLoader(
         gh<_i484.AdShared>(),
         gh<_i837.AdId>(instanceName: 'globalAdId'),
         gh<_i932.PremiumHolder>(),

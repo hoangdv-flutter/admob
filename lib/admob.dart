@@ -1,3 +1,6 @@
+library admob;
+export 'interstitial/interstitial_ad.dart';
+
 import 'admob_platform_interface.dart';
 
 class Admob {
