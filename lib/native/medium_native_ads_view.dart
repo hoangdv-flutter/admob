@@ -29,16 +29,16 @@ class MediumNativeAdsBanner extends StatefulWidget {
 }
 
 class _MediumNativeAdsBannerState extends BaseState<MediumNativeAdsBanner> {
-  late final premiumCubit = PremiumCubit();
+  late final _premiumCubit = PremiumCubit();
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: premiumCubit,
+      value: _premiumCubit,
       child: StreamBuilder(
         builder: (context, snapshot) =>
             snapshot.data != true ? _buildAds() : Container(),
-        stream: premiumCubit.isPremiumStream,
+        stream: _premiumCubit.isPremiumStream,
       ),
     );
   }
@@ -138,5 +138,11 @@ class _MediumNativeAdsBannerState extends BaseState<MediumNativeAdsBanner> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _premiumCubit.close();
+    super.dispose();
   }
 }

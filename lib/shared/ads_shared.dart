@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:admob/app_open/app_open_ads_loader.dart';
+import 'package:admob/banner/banner_config.dart';
 import 'package:admob/full_screen_ads_loader.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,6 +29,12 @@ class AdShared {
   static const _appOpenGap = "appOpenGap";
 
   static const _fullscreenTimeGap = "fullScreenTimeGap";
+
+  static const useInterOnBackKey = "userInterOnBack";
+
+  static const hiddenNativeAdsKey = "hiddenNativeAds";
+
+  static const bannerConfigKey = "bannerConfig";
 
   AdShared(this.sharedPreferences);
 
@@ -99,4 +108,30 @@ class AdShared {
 
   set fullScreenTimeGap(value) =>
       sharedPreferences.setInt(_fullscreenTimeGap, value);
+
+  bool get useInterOnBack =>
+      sharedPreferences.getBool(useInterOnBackKey) ?? true;
+
+  set useInterOnBack(bool value) =>
+      sharedPreferences.setBool(useInterOnBackKey, value);
+
+  String get hiddenNativeAdsJson =>
+      sharedPreferences.getString(hiddenNativeAdsKey) ?? "[]";
+
+  set hiddenNativeAdsJson(String value) =>
+      sharedPreferences.setString(hiddenNativeAdsKey, value);
+
+  Set<String> get hiddenNativeAds =>
+      (jsonDecode(hiddenNativeAdsJson) as List<dynamic>).cast<String>().toSet();
+
+  String get bannerConfigJson =>
+      sharedPreferences.getString(bannerConfigKey) ?? "{}";
+
+  set bannerConfigJson(String value) =>
+      sharedPreferences.setString(bannerConfigKey, value);
+
+  Map<String, BannerConfig> get bannerConfigs =>
+      (jsonDecode(bannerConfigJson) as Map<String, dynamic>).map(
+        (key, value) => MapEntry(key, BannerConfig.fromJson(value)),
+      );
 }

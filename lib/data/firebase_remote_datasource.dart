@@ -22,24 +22,30 @@ class FirebaseRemoteDataSource extends RemoteDataSource {
 
   AdShared shared;
 
-  FirebaseRemoteDataSource(this.shared) {
-    Future.sync(() async {
-      await _remote.setConfigSettings(RemoteConfigSettings(
-          fetchTimeout: const Duration(minutes: 1),
-          minimumFetchInterval: const Duration(hours: 1)));
-      await _remote.setDefaults({
-        _interAdsGap: shared.interstitialGap,
-        _appOpenGap: shared.appOpenGap,
-        _isMonetization: shared.isMonetization,
-        _minTimeGap: shared.minGapAds,
-        _maxTimeGap: shared.maxGapAds,
-        _fullscreenAdsTimeGap: shared.fullScreenTimeGap
-      });
-      await process(() => _remote.fetchAndActivate());
-      shared.isMonetization = _remote.getBool(_isMonetization);
-      shared.appOpenGap = _remote.getInt(_appOpenGap);
-      shared.interstitialGap = _remote.getInt(_interAdsGap);
-      shared.fullScreenTimeGap = _remote.getInt(_fullscreenAdsTimeGap);
+  FirebaseRemoteDataSource(this.shared);
+
+  Future<void> fetchConfig() async {
+    await _remote.setConfigSettings(RemoteConfigSettings(
+        fetchTimeout: const Duration(minutes: 1),
+        minimumFetchInterval: const Duration(hours: 1)));
+    await _remote.setDefaults({
+      _interAdsGap: shared.interstitialGap,
+      _appOpenGap: shared.appOpenGap,
+      _isMonetization: shared.isMonetization,
+      _minTimeGap: shared.minGapAds,
+      _maxTimeGap: shared.maxGapAds,
+      _fullscreenAdsTimeGap: shared.fullScreenTimeGap,
+      AdShared.useInterOnBackKey: shared.useInterOnBack,
+      AdShared.hiddenNativeAdsKey: shared.hiddenNativeAdsJson,
+      AdShared.bannerConfigKey: shared.bannerConfigJson,
     });
+    await process(() => _remote.fetchAndActivate());
+    shared.isMonetization = _remote.getBool(_isMonetization);
+    shared.appOpenGap = _remote.getInt(_appOpenGap);
+    shared.interstitialGap = _remote.getInt(_interAdsGap);
+    shared.fullScreenTimeGap = _remote.getInt(_fullscreenAdsTimeGap);
+    shared.useInterOnBack = _remote.getBool(AdShared.useInterOnBackKey);
+    shared.hiddenNativeAdsJson = _remote.getString(AdShared.hiddenNativeAdsKey);
+    shared.bannerConfigJson = _remote.getString(AdShared.bannerConfigKey);
   }
 }

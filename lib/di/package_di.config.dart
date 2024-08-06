@@ -85,7 +85,10 @@ extension GetItInjectableX on _i174.GetIt {
       dispose: (i) => i.dispose(),
     );
     gh.singleton<_i632.AdsLoader>(
-      () => _i632.AdsLoader(gh<_i273.AppOpenAdsLoader>()),
+      () => _i632.AdsLoader(
+        gh<_i273.AppOpenAdsLoader>(),
+        gh<_i987.FirebaseRemoteDataSource>(),
+      ),
       dispose: (i) => i.dispose(),
     );
     gh.singleton<_i1027.AppLifecycleReactor>(

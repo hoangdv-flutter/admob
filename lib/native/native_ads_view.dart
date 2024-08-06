@@ -59,7 +59,7 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
     _nativeStateSubs = context
         .read<NativeAdsCubit>()
         .loadAds(widget.nativeAdId, nativeAdFactory)
-        .nativeLoaderState
+        ?.nativeLoaderState
         .listen((event) {
       setState(() {
         if (event.state == DataState.error) {
@@ -73,7 +73,9 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (_premiumHolder.isPremium) return Container();
+    if (_premiumHolder.isPremium || _nativeStateSubs == null) {
+      return Container();
+    }
     final adsState = _adLoaderState?.state ?? DataState.error;
     final nativeAd = _adLoaderState?.nativeAd;
     return adsState == DataState.error

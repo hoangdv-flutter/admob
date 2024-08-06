@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:admob/ad_loader_listener.dart';
 import 'package:admob/admob.dart';
+import 'package:admob/shared/ads_shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_core/core.dart';
 import 'package:flutter_core/data/response.dart';
@@ -59,7 +60,8 @@ extension ContextExt on BuildContext {
       if (Navigator.canPop(this)) {
         CrashlyticsLogger.logError(
             "pop screen ${widget.runtimeType.toString()}");
-        if (ignoreAds) {
+        final shared = appInject<AdShared>();
+        if (ignoreAds || !shared.useInterOnBack) {
           Navigator.of(this, rootNavigator: true).pop(result);
           adLoaderListener?.onInterPassed?.call();
           return;

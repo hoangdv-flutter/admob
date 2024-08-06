@@ -21,16 +21,16 @@ class BannerWidget extends StatefulWidget {
 
 class _BannerWidgetState extends BaseState<BannerWidget> {
   late final BannerAdsLoader _bannerAdLoader = appInject<BannerAdsLoader>();
+  late final _premiumCubit = PremiumCubit();
 
   @override
   Widget build(BuildContext context) {
-    final premiumCubit = PremiumCubit();
     return BlocProvider.value(
-      value: premiumCubit,
+      value: _premiumCubit,
       child: StreamBuilder(
         builder: (context, snapshot) =>
             snapshot.data != true ? _buildAds(context) : Container(),
-        stream: premiumCubit.isPremiumStream,
+        stream: _premiumCubit.isPremiumStream,
       ),
     );
   }
@@ -74,6 +74,7 @@ class _BannerWidgetState extends BaseState<BannerWidget> {
   @override
   void dispose() {
     _bannerAdLoader.dispose();
+    _premiumCubit.close();
     super.dispose();
   }
 

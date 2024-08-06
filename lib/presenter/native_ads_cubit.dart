@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:admob/shared/ads_shared.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_core/core.dart';
 import 'package:flutter_core/ext/di.dart';
@@ -20,7 +21,14 @@ class NativeAdsCubit extends Cubit {
 
   late final nativeAdLoader = appInject<NativeAdsLoader>();
 
-  NativeAdRequester loadAds(String requestId, String factoryId) {
+  late final adShared = appInject<AdShared>();
+
+  late final hiddenNativeAds = adShared.hiddenNativeAds;
+
+  NativeAdRequester? loadAds(String requestId, String factoryId) {
+    if(hiddenNativeAds.contains(requestId)){
+      return null;
+    }
     final requester = nativeLoaderMap[requestId] ??
         (NativeAdRequester().also(
           call: (value) => nativeLoaderMap[requestId] = value,

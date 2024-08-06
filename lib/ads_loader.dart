@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:admob/app_open/app_open_ads_loader.dart';
+import 'package:admob/data/firebase_remote_datasource.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:injectable/injectable.dart';
 
@@ -12,11 +13,13 @@ class AdsLoader {
 
   final AppOpenAdsLoader _appOpenAdsLoader;
 
+  final FirebaseRemoteDataSource remoteDataSource;
+
   StreamSubscription? _methodSubs;
 
   var _initializing = false;
 
-  AdsLoader(this._appOpenAdsLoader) {
+  AdsLoader(this._appOpenAdsLoader, this.remoteDataSource) {
     AdmobPlatform.instance.applyMethodChannel();
     _methodSubs = AdmobPlatform.instance.onRequestInitAdSdk.listen((event) {
       _init();
@@ -26,6 +29,7 @@ class AdsLoader {
   Future<void> _init() async {
     if (_initializing) return;
     _initializing = true;
+    await remoteDataSource.fetchConfig();
     MobileAds.instance
         .updateRequestConfiguration(RequestConfiguration(testDeviceIds: [
       '2F4D0760CC76965FA11B704EB25F30A7',
