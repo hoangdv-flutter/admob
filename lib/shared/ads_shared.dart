@@ -1,8 +1,6 @@
 import 'package:admob/app_open/app_open_ads_loader.dart';
 import 'package:admob/full_screen_ads_loader.dart';
 import 'package:injectable/injectable.dart';
-import 'package:rxdart/streams.dart';
-import 'package:rxdart/subjects.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 @singleton

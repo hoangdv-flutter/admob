@@ -50,6 +50,16 @@ class InterstitialLoader extends FullScreenAdsLoader<InterstitialAd> {
         ));
   }
 
+  bool availableToShow() {
+    if (_premiumHolder.isPremium) {
+      return false;
+    }
+    if (!_adShared.canShowInterstitial || !flow.validToRequestAds) {
+      return false;
+    }
+    return availableAds != null;
+  }
+
   @override
   Future<bool> show({AdLoaderListener? adLoaderListener}) async {
     if (_premiumHolder.isPremium) {
