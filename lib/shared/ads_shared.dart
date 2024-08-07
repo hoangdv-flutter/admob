@@ -30,7 +30,7 @@ class AdShared {
 
   static const _fullscreenTimeGap = "fullScreenTimeGap";
 
-  static const useInterOnBackKey = "userInterOnBack";
+  static const useInterOnBackKey = "useInterOnBack";
 
   static const hiddenNativeAdsKey = "hiddenNativeAds";
 
@@ -127,11 +127,13 @@ class AdShared {
   String get bannerConfigJson =>
       sharedPreferences.getString(bannerConfigKey) ?? "{}";
 
-  set bannerConfigJson(String value) =>
-      sharedPreferences.setString(bannerConfigKey, value);
+  set bannerConfigJson(String value) {
+    sharedPreferences.setString(bannerConfigKey, value);
+    bannerConfigs.clear();
+    bannerConfigs.addAll((jsonDecode(value) as Map<String, dynamic>).map(
+      (key, value) => MapEntry(key, BannerConfig.fromJson(value)),
+    ));
+  }
 
-  Map<String, BannerConfig> get bannerConfigs =>
-      (jsonDecode(bannerConfigJson) as Map<String, dynamic>).map(
-        (key, value) => MapEntry(key, BannerConfig.fromJson(value)),
-      );
+  late final bannerConfigs = <String, BannerConfig>{};
 }

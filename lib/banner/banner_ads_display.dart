@@ -11,9 +11,11 @@ import 'package:shimmer/shimmer.dart';
 enum CollapsibleDirection { top, bottom }
 
 class BannerWidget extends StatefulWidget {
+  final String bannerId;
   final CollapsibleDirection? collapsibleDirection;
 
-  const BannerWidget({super.key, this.collapsibleDirection});
+  const BannerWidget(
+      {super.key, this.collapsibleDirection, required this.bannerId});
 
   @override
   State<BannerWidget> createState() => _BannerWidgetState();
@@ -82,7 +84,8 @@ class _BannerWidgetState extends BaseState<BannerWidget> {
     _bannerAdLoader.load(
         extras: widget.collapsibleDirection != null
             ? {"collapsible": "${widget.collapsibleDirection?.name}"}
-            : null);
+            : null,
+        id: widget.bannerId);
     return StreamBuilder(
       builder: (context, snapshot) => Container(
         color: Colors.white,

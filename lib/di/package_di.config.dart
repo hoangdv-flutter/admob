@@ -58,8 +58,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i318.RewardLoader(gh<_i837.AdId>(instanceName: 'globalAdId')),
       dispose: (i) => i.dispose(),
     );
-    gh.factory<_i661.BannerAdsLoader>(() =>
-        _i661.BannerAdsLoader(gh<_i837.AdId>(instanceName: 'globalAdId')));
+    gh.factory<_i661.BannerAdsLoader>(() => _i661.BannerAdsLoader(
+          gh<_i837.AdId>(instanceName: 'globalAdId'),
+          gh<_i484.AdShared>(),
+        ));
     gh.singleton<_i987.FirebaseRemoteDataSource>(
         () => _i987.FirebaseRemoteDataSource(gh<_i484.AdShared>()));
     gh.lazySingleton<_i598.NativeAdsLoader>(
