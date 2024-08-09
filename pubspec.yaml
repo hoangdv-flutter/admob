@@ -22,6 +22,7 @@ dependencies:
     path: ../flutter_core/
   synchronized: any
   firebase_remote_config: any
+  user_messaging_platform: any
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:admob/shared/ads_shared.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_core/data/data_source.dart';
@@ -8,17 +10,19 @@ import 'package:injectable/injectable.dart';
 class FirebaseRemoteDataSource extends RemoteDataSource {
   final _remote = FirebaseRemoteConfig.instance;
 
-  static const _interAdsGap = "inter_ads_gap";
+  static String get _suffix => Platform.isAndroid ? '' : '_ios';
 
-  static const _appOpenGap = "inter_and_open_app_gap";
+  static final _interAdsGap = "inter_ads_gap$_suffix";
 
-  static const _isMonetization = "is_monetization";
+  static final _appOpenGap = "inter_and_open_app_gap$_suffix";
 
-  static const _fullscreenAdsTimeGap = "full_screen_ads_time_gap";
+  static final _isMonetization = "is_monetization$_suffix";
 
-  static const _minTimeGap = "min_time_gap";
+  static final _fullscreenAdsTimeGap = "full_screen_ads_time_gap$_suffix";
 
-  static const _maxTimeGap = "max_time_gap";
+  static final _minTimeGap = "min_time_gap$_suffix";
+
+  static final _maxTimeGap = "max_time_gap$_suffix";
 
   AdShared shared;
 

@@ -28,6 +28,8 @@ abstract class AdmobPlatform extends PlatformInterface {
     _instance = instance;
   }
 
+  void notifyConsentDismiss();
+
   void applyMethodChannel();
 
   Future<String?> getPlatformVersion() {

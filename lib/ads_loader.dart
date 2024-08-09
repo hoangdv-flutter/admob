@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:admob/app_open/app_open_ads_loader.dart';
 import 'package:admob/data/firebase_remote_datasource.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:injectable/injectable.dart';
+import 'package:user_messaging_platform/user_messaging_platform.dart';
 
 import 'admob_platform_interface.dart';
 
@@ -20,9 +22,21 @@ class AdsLoader {
   var _initializing = false;
 
   AdsLoader(this._appOpenAdsLoader, this.remoteDataSource) {
-    AdmobPlatform.instance.applyMethodChannel();
-    _methodSubs = AdmobPlatform.instance.onRequestInitAdSdk.listen((event) {
-      _init();
+    Future.sync(() async {
+      AdmobPlatform.instance.applyMethodChannel();
+      if (Platform.isIOS) {
+        final status = await UserMessagingPlatform.instance
+            .getTrackingAuthorizationStatus();
+        if (status == TrackingAuthorizationStatus.notDetermined) {
+          await UserMessagingPlatform.instance.requestTrackingAuthorization();
+        }
+        await _init();
+        AdmobPlatform.instance.notifyConsentDismiss();
+      } else {
+        _methodSubs = AdmobPlatform.instance.onRequestInitAdSdk.listen((event) {
+          _init();
+        });
+      }
     });
   }
 

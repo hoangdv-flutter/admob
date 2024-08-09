@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
@@ -26,7 +28,7 @@ class MethodChannelAdmob extends AdmobPlatform {
       switch (call.method) {
         case PluginMethods.onConsentDismiss:
           print("Ad Consent State onConsentDismiss");
-          _onConsentDismiss.add("");
+          notifyConsentDismiss();
           break;
 
         case PluginMethods.onRequestInitAdSdk:
@@ -35,7 +37,14 @@ class MethodChannelAdmob extends AdmobPlatform {
           break;
       }
     });
-    methodChannel.invokeMethod(PluginMethods.showConsentForm);
+    if (Platform.isAndroid) {
+      methodChannel.invokeMethod(PluginMethods.showConsentForm);
+    }
+  }
+
+  @override
+  void notifyConsentDismiss() {
+    _onConsentDismiss.add("");
   }
 
   @override

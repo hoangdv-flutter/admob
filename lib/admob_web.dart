@@ -33,4 +33,8 @@ class AdmobWeb extends AdmobPlatform {
 
   @override
   Stream get onRequestInitAdSdk => throw UnimplementedError();
+
+  @override
+  void notifyConsentDismiss() {
+  }
 }

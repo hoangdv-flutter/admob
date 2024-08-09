@@ -7,7 +7,6 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 class MockAdmobPlatform
     with MockPlatformInterfaceMixin
     implements AdmobPlatform {
-
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
 
@@ -21,6 +20,9 @@ class MockAdmobPlatform
 
   @override
   Stream get onRequestInitAdSdk => throw UnimplementedError();
+
+  @override
+  void notifyConsentDismiss() {}
 }
 
 void main() {
