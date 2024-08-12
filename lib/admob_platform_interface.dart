@@ -12,7 +12,6 @@ abstract class AdmobPlatform extends PlatformInterface {
 
   Stream<dynamic> get onRequestInitAdSdk;
 
-
   Stream<dynamic> get onConsentDismiss;
 
   /// The default instance of [AdmobPlatform] to use.

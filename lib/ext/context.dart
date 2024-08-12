@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:admob/ad_loader_listener.dart';
 import 'package:admob/admob.dart';
+import 'package:admob/listener/global_listener.dart';
 import 'package:admob/shared/ads_shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_core/core.dart';
@@ -13,6 +14,8 @@ extension ContextExt on BuildContext {
       {bool ignoreAds = false,
       bool isReplacement = false,
       AdLoaderListener? adLoaderListener}) async {
+    final adShared = appInject<AdShared>();
+    final interWhenBack = adShared.useInterOnBack;
     final completer = Completer<dynamic>();
     if (ignoreAds) {
       try {
@@ -20,6 +23,9 @@ extension ContextExt on BuildContext {
             ? await Navigator.pushReplacement(this, route)
             : await Navigator.push(this, route);
         completer.complete(r);
+        if (interWhenBack) {
+          GlobalAdListener.onBackPressedIOS?.call(this);
+        }
       } catch (e) {
         completer.complete(Response.failed(e));
       }
@@ -35,6 +41,9 @@ extension ContextExt on BuildContext {
             ? await Navigator.pushReplacement(this, route)
             : await Navigator.push(this, route);
         completer.complete(r);
+        if (interWhenBack) {
+          GlobalAdListener.onBackPressedIOS?.call(this);
+        }
       } catch (e) {
         completer.complete(Response.failed(e));
       }

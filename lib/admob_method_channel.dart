@@ -27,12 +27,12 @@ class MethodChannelAdmob extends AdmobPlatform {
     methodChannel.setMethodCallHandler((call) async {
       switch (call.method) {
         case PluginMethods.onConsentDismiss:
-          print("Ad Consent State onConsentDismiss");
+          debugPrint("Ad Consent State onConsentDismiss");
           notifyConsentDismiss();
           break;
 
         case PluginMethods.onRequestInitAdSdk:
-          print("Ad Consent State onRequestInitAdSdk");
+          debugPrint("Ad Consent State onRequestInitAdSdk");
           _onRequestInitAdSdk.add("");
           break;
       }
