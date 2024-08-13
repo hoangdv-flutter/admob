@@ -34,11 +34,8 @@ class AdsLoader {
           () async {
             var r = TrackingStatus.notDetermined;
             var total = 0;
-            var start = DateTime.now().millisecondsSinceEpoch;
             while (true) {
               r = await AppTrackingTransparency.requestTrackingAuthorization();
-              print(
-                  "check ATT $r $total ${DateTime.now().millisecondsSinceEpoch - start}");
               if (++total > 5 || r != TrackingStatus.notDetermined) {
                 await _init();
                 AdmobPlatform.instance.notifyConsentDismiss();
