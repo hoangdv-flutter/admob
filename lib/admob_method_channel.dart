@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_core/ext/stream.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'admob_platform_interface.dart';
@@ -18,7 +19,7 @@ class MethodChannelAdmob extends AdmobPlatform {
   @override
   Stream<dynamic> get onRequestInitAdSdk => _onRequestInitAdSdk.stream;
 
-  late final _onConsentDismiss = BehaviorSubject();
+  late final _onConsentDismiss = BehaviorSubject<bool>();
 
   @override
   Stream<dynamic> get onConsentDismiss => _onConsentDismiss.stream;
@@ -33,7 +34,7 @@ class MethodChannelAdmob extends AdmobPlatform {
 
         case PluginMethods.onRequestInitAdSdk:
           debugPrint("Ad Consent State onRequestInitAdSdk");
-          _onRequestInitAdSdk.add("");
+          _onRequestInitAdSdk.addSafety(true);
           break;
       }
     });
@@ -44,7 +45,8 @@ class MethodChannelAdmob extends AdmobPlatform {
 
   @override
   void notifyConsentDismiss() {
-    _onConsentDismiss.add("");
+    print("notifyConsentDismiss");
+    _onConsentDismiss.addSafety(true);
   }
 
   @override
