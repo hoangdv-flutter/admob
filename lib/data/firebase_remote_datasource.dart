@@ -10,19 +10,19 @@ import 'package:injectable/injectable.dart';
 class FirebaseRemoteDataSource extends RemoteDataSource {
   final _remote = FirebaseRemoteConfig.instance;
 
-  static String get _suffix => Platform.isAndroid ? '' : '_ios';
+  static String get _prefix => Platform.isAndroid ? '' : 'ios_';
 
-  static final _interAdsGap = "inter_ads_gap$_suffix";
+  static final _interAdsGap = "${_prefix}inter_ads_gap";
 
-  static final _appOpenGap = "inter_and_open_app_gap$_suffix";
+  static final _appOpenGap = "${_prefix}inter_and_open_app_gap";
 
-  static final _isMonetization = "is_monetization$_suffix";
+  static final _isMonetization = "${_prefix}is_monetization";
 
-  static final _fullscreenAdsTimeGap = "full_screen_ads_time_gap$_suffix";
+  static final _fullscreenAdsTimeGap = "${_prefix}full_screen_ads_time_gap";
 
-  static final _minTimeGap = "min_time_gap$_suffix";
+  static final _minTimeGap = "${_prefix}min_time_gap";
 
-  static final _maxTimeGap = "max_time_gap$_suffix";
+  static final _maxTimeGap = "${_prefix}max_time_gap";
 
   AdShared shared;
 

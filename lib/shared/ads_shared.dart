@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:admob/app_open/app_open_ads_loader.dart';
 import 'package:admob/banner/banner_config.dart';
@@ -9,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 @singleton
 class AdShared {
   final SharedPreferences sharedPreferences;
+
+  static String get _prefix => Platform.isAndroid ? '' : 'ios_';
 
   static const _lastTimeShowInterAds = "last_time_show_inter_ads";
 
@@ -30,11 +33,11 @@ class AdShared {
 
   static const _fullscreenTimeGap = "fullScreenTimeGap";
 
-  static const useInterOnBackKey = "useInterOnBack";
+  static final useInterOnBackKey = "${_prefix}useInterOnBack";
 
-  static const hiddenNativeAdsKey = "hiddenNativeAds";
+  static final hiddenNativeAdsKey = "${_prefix}hiddenNativeAds";
 
-  static const bannerConfigKey = "bannerConfig";
+  static final bannerConfigKey = "${_prefix}bannerConfig";
 
   AdShared(this.sharedPreferences);
 
