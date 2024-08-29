@@ -42,6 +42,7 @@ class FirebaseRemoteDataSource extends RemoteDataSource {
       AdShared.useInterOnBackKey: shared.useInterOnBack,
       AdShared.hiddenNativeAdsKey: shared.hiddenNativeAdsJson,
       AdShared.bannerConfigKey: shared.bannerConfigJson,
+      AdShared.interSplashEnabledKey: shared.interSplashEnabled
     });
     await process(() => _remote.fetchAndActivate());
     shared.isMonetization = _remote.getBool(_isMonetization);
@@ -51,5 +52,6 @@ class FirebaseRemoteDataSource extends RemoteDataSource {
     shared.useInterOnBack = _remote.getBool(AdShared.useInterOnBackKey);
     shared.hiddenNativeAdsJson = _remote.getString(AdShared.hiddenNativeAdsKey);
     shared.bannerConfigJson = _remote.getString(AdShared.bannerConfigKey);
+    shared.interSplashEnabled = _remote.getBool(AdShared.interSplashEnabledKey);
   }
 }

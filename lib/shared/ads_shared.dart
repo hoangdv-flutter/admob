@@ -39,6 +39,8 @@ class AdShared {
 
   static final bannerConfigKey = "${_prefix}bannerConfig";
 
+  static final interSplashEnabledKey = "${_prefix}interSplashEnabled";
+
   AdShared(this.sharedPreferences);
 
   int get lastTimeShowInterAds =>
@@ -139,4 +141,10 @@ class AdShared {
   }
 
   late final bannerConfigs = <String, BannerConfig>{};
+
+  bool get interSplashEnabled =>
+      sharedPreferences.getBool(interSplashEnabledKey) ?? true;
+
+  set interSplashEnabled(bool value) =>
+      sharedPreferences.setBool(interSplashEnabledKey, value);
 }
