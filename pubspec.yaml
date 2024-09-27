@@ -17,7 +17,6 @@ dependencies:
   rxdart: any
   flutter_bloc: any
   shimmer: any
-  responsive_sizer: any
   flutter_core:
     path: ../flutter_core/
   synchronized: any
