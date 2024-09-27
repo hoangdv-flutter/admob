@@ -25,6 +25,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
+    namespace 'com.hoangdv.admob.admob'
     compileSdkVersion 31
 
     compileOptions {
