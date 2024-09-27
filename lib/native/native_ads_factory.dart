@@ -1,4 +1,4 @@
-import 'package:flutter_core/ext/object.dart';
+import 'package:flutter_core/core.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:injectable/injectable.dart';
 

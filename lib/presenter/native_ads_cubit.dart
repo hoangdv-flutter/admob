@@ -1,14 +1,13 @@
 import 'dart:async';
 
-import 'package:admob/shared/ads_shared.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_core/core.dart';
-import 'package:flutter_core/ext/di.dart';
 import 'package:admob/native/native_ads_loader.dart';
 import 'package:admob/native/native_loader_listener.dart';
+import 'package:admob/shared/ads_shared.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_core/core.dart';
 import 'package:flutter_core/data/obj_references.dart';
-import 'package:flutter_core/ext/object.dart';
+import 'package:flutter_core/ext/di.dart';
 import 'package:flutter_core/ext/stream.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:rxdart/rxdart.dart';
@@ -26,7 +25,7 @@ class NativeAdsCubit extends Cubit {
   late final hiddenNativeAds = adShared.hiddenNativeAds;
 
   NativeAdRequester? loadAds(String requestId, String factoryId) {
-    if(hiddenNativeAds.contains(requestId)){
+    if (hiddenNativeAds.contains(requestId)) {
       return null;
     }
     final requester = nativeLoaderMap[requestId] ??
