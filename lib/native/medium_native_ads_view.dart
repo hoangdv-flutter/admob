@@ -1,4 +1,4 @@
-import 'package:admob/presenter/native_ads_cubit.dart';
+import 'package:admob/presenter/native_ads_presenter.dart';
 import 'package:admob/presenter/premium_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

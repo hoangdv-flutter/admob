@@ -35,7 +35,7 @@ class AdShared {
 
   static final useInterOnBackKey = "${_prefix}useInterOnBack";
 
-  static final hiddenNativeAdsKey = "${_prefix}hiddenNativeAds";
+  static final nativeAdsConfigKey = "${_prefix}nativeConfig";
 
   static final bannerConfigKey = "${_prefix}bannerConfig";
 
@@ -120,14 +120,16 @@ class AdShared {
   set useInterOnBack(bool value) =>
       sharedPreferences.setBool(useInterOnBackKey, value);
 
-  String get hiddenNativeAdsJson =>
-      sharedPreferences.getString(hiddenNativeAdsKey) ?? "[]";
+  String get nativeScreenConfigJson =>
+      sharedPreferences.getString(nativeAdsConfigKey) ?? "{}";
 
-  set hiddenNativeAdsJson(String value) =>
-      sharedPreferences.setString(hiddenNativeAdsKey, value);
+  set nativeScreenConfigJson(String value) =>
+      sharedPreferences.setString(nativeAdsConfigKey, value);
 
-  Set<String> get hiddenNativeAds =>
-      (jsonDecode(hiddenNativeAdsJson) as List<dynamic>).cast<String>().toSet();
+  Map<String, bool> get nativeScreenConfig =>
+      (jsonDecode(nativeScreenConfigJson) as Map<String, dynamic>).map(
+        (key, value) => MapEntry(key, bool.tryParse(value) ?? true),
+      );
 
   String get bannerConfigJson =>
       sharedPreferences.getString(bannerConfigKey) ?? "{}";

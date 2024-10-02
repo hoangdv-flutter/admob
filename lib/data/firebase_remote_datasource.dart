@@ -40,9 +40,9 @@ class FirebaseRemoteDataSource extends RemoteDataSource {
       _maxTimeGap: shared.maxGapAds,
       _fullscreenAdsTimeGap: shared.fullScreenTimeGap,
       AdShared.useInterOnBackKey: shared.useInterOnBack,
-      AdShared.hiddenNativeAdsKey: shared.hiddenNativeAdsJson,
       AdShared.bannerConfigKey: shared.bannerConfigJson,
-      AdShared.interSplashEnabledKey: shared.interSplashEnabled
+      AdShared.interSplashEnabledKey: shared.interSplashEnabled,
+      AdShared.nativeAdsConfigKey: shared.nativeScreenConfigJson
     });
     await process(() => _remote.fetchAndActivate());
     shared.isMonetization = _remote.getBool(_isMonetization);
@@ -50,7 +50,8 @@ class FirebaseRemoteDataSource extends RemoteDataSource {
     shared.interstitialGap = _remote.getInt(_interAdsGap);
     shared.fullScreenTimeGap = _remote.getInt(_fullscreenAdsTimeGap);
     shared.useInterOnBack = _remote.getBool(AdShared.useInterOnBackKey);
-    shared.hiddenNativeAdsJson = _remote.getString(AdShared.hiddenNativeAdsKey);
+    shared.nativeScreenConfigJson =
+        _remote.getString(AdShared.nativeAdsConfigKey);
     shared.bannerConfigJson = _remote.getString(AdShared.bannerConfigKey);
     shared.interSplashEnabled = _remote.getBool(AdShared.interSplashEnabledKey);
   }

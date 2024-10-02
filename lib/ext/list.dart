@@ -1,9 +1,11 @@
-import 'package:admob/presenter/premium_cubit.dart';
+import 'package:flutter_core/data/shared/premium_holder.dart';
+import 'package:flutter_core/ext/di.dart';
 
 extension ListExt<T> on List<T> {
   void insertAd(T Function() itemBuilder, int startIndex, int repeatInterval,
-      int maxAds, PremiumCubit premiumCubit) {
-    if (premiumCubit.isPremium) return;
+      int maxAds) {
+    final premiumHolder = appInject<PremiumHolder>();
+    if (premiumHolder.isPremium) return;
     if (length >= startIndex) {
       insert(startIndex, itemBuilder());
     }

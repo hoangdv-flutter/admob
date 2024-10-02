@@ -1,7 +1,10 @@
 library admob;
-export 'interstitial/interstitial_ad.dart';
 
 import 'admob_platform_interface.dart';
+
+export 'interstitial/interstitial_ad.dart';
+export 'presenter/native_ads_presenter.dart';
+export 'presenter/premium_cubit.dart';
 
 class Admob {
   Future<String?> getPlatformVersion() {

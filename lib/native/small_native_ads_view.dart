@@ -1,4 +1,4 @@
-import 'package:admob/presenter/native_ads_cubit.dart';
+import 'package:admob/admob.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_core/core.dart';
 import 'package:flutter_core/theme/app_theme.dart';

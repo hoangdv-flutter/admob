@@ -1,10 +1,7 @@
-import 'dart:async';
-
 import 'package:admob/native/native_ads_loader.dart';
 import 'package:admob/native/native_loader_listener.dart';
 import 'package:admob/shared/ads_shared.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_core/core.dart';
 import 'package:flutter_core/data/obj_references.dart';
 import 'package:flutter_core/ext/di.dart';
@@ -13,8 +10,8 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:synchronized/extension.dart';
 
-class NativeAdsCubit extends Cubit {
-  NativeAdsCubit() : super(null);
+class NativeAdsNotifier extends BaseChangeNotifier {
+  NativeAdsNotifier();
 
   late final nativeLoaderMap = <String, NativeAdRequester>{};
 
@@ -22,10 +19,10 @@ class NativeAdsCubit extends Cubit {
 
   late final adShared = appInject<AdShared>();
 
-  late final hiddenNativeAds = adShared.hiddenNativeAds;
+  late final nativeConfig = adShared.nativeScreenConfig;
 
   NativeAdRequester? loadAds(String requestId, String factoryId) {
-    if (hiddenNativeAds.contains(requestId)) {
+    if (nativeConfig[requestId] == false) {
       return null;
     }
     final requester = nativeLoaderMap[requestId] ??
@@ -41,14 +38,14 @@ class NativeAdsCubit extends Cubit {
   }
 
   @override
-  Future<void> close() async {
-    await nativeAdLoader.synchronized(() {
+  void dispose() {
+    nativeAdLoader.synchronized(() {
       nativeLoaderMap.forEach((key, value) {
         value.close();
       });
       nativeLoaderMap.clear();
     });
-    return await super.close();
+    super.dispose();
   }
 }
 

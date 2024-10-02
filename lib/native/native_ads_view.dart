@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:admob/presenter/native_ads_cubit.dart';
+import 'package:admob/presenter/native_ads_presenter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_core/core.dart';
@@ -56,7 +56,7 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
       setState(() {});
     });
     _nativeStateSubs = context
-        .read<NativeAdsCubit>()
+        .read<NativeAdsNotifier>()
         .loadAds(widget.nativeAdId, nativeAdFactory)
         ?.nativeLoaderState
         .listen((event) {
