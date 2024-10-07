@@ -31,35 +31,17 @@ class AdHelperDebug extends AdId {
 
   @override
   String get interHighAdUnitId {
-    if (Platform.isAndroid) {
-      return "ca-app-pub-3940256099942544/1033173712";
-    } else if (Platform.isIOS) {
-      return "ca-app-pub-3940256099942544/4411468910";
-    } else {
-      throw UnsupportedError("Unsupported platform");
-    }
+   return normalInterAdUnitId;
   }
 
   @override
   String get interMediumAdUnitId {
-    if (Platform.isAndroid) {
-      return "ca-app-pub-3940256099942544/1033173712";
-    } else if (Platform.isIOS) {
-      return "ca-app-pub-3940256099942544/4411468910";
-    } else {
-      throw UnsupportedError("Unsupported platform");
-    }
+    return normalInterAdUnitId;
   }
 
   @override
   String get interAllPriceAdUnitId {
-    if (Platform.isAndroid) {
-      return "ca-app-pub-3940256099942544/1033173712";
-    } else if (Platform.isIOS) {
-      return "ca-app-pub-3940256099942544/4411468910";
-    } else {
-      throw UnsupportedError("Unsupported platform");
-    }
+    return normalInterAdUnitId;
   }
 
   @override
