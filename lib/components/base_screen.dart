@@ -3,7 +3,6 @@ import 'package:admob/listener/global_listener.dart';
 import 'package:admob/shared/ads_shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_core/core.dart';
-import 'package:flutter_core/ext/di.dart';
 
 abstract class AdsBaseScreen extends BaseScreen {
   const AdsBaseScreen({super.key});

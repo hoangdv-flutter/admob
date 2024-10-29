@@ -4,8 +4,6 @@ import 'package:admob/shared/ads_shared.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_core/core.dart';
 import 'package:flutter_core/data/obj_references.dart';
-import 'package:flutter_core/ext/di.dart';
-import 'package:flutter_core/ext/stream.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:synchronized/extension.dart';

@@ -2,7 +2,6 @@ import 'package:admob/ad_loader_listener.dart';
 import 'package:admob/ads_loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_core/core.dart';
-import 'package:flutter_core/ext/di.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'shared/ads_shared.dart';

@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:admob/shared/ads_shared.dart';
-import 'package:flutter_core/ext/list.dart';
+import 'package:flutter_core/core.dart';
 
 class WaterFlow {
   final List<String> waterFlowIds;

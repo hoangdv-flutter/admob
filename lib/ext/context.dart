@@ -7,7 +7,6 @@ import 'package:admob/shared/ads_shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_core/core.dart';
 import 'package:flutter_core/data/response.dart';
-import 'package:flutter_core/ext/di.dart';
 
 extension ContextExt on BuildContext {
   Future<dynamic> pushScreenWithAds<T>(Route<T> route,

@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:admob/shared/ads_shared.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter_core/core.dart';
 import 'package:flutter_core/data/data_source.dart';
-import 'package:flutter_core/ext/app.dart';
 import 'package:injectable/injectable.dart';
 
 @singleton

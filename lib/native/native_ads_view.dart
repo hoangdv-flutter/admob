@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_core/core.dart';
 import 'package:flutter_core/data/shared/premium_holder.dart';
-import 'package:flutter_core/ext/di.dart';
 import 'package:flutter_core/theme/app_theme.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shimmer/shimmer.dart';

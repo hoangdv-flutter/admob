@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:admob/app_open/app_open_ads_loader.dart';
-import 'package:flutter_core/ext/stream.dart';
+import 'package:flutter_core/core.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:injectable/injectable.dart';
 

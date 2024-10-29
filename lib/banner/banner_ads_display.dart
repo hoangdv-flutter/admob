@@ -2,7 +2,6 @@ import 'package:admob/banner/banner_ads_loader.dart';
 import 'package:admob/presenter/premium_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_core/ext/di.dart';
 import 'package:flutter_core/core.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shimmer/shimmer.dart';
