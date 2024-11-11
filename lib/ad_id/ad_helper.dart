@@ -5,7 +5,7 @@ import 'package:injectable/injectable.dart';
 @Named(AdId.namedAdId)
 @Injectable(as: AdId)
 class AdHelper extends AdId {
-  static const _forceDebugMode = false;
+  static const _forceDebugMode = true;
 
   final AdId debugAdId;
 
