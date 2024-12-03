@@ -1,6 +1,4 @@
 import 'package:admob/ext/context.dart';
-import 'package:admob/listener/global_listener.dart';
-import 'package:admob/shared/ads_shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_core/core.dart';
 
