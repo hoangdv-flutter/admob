@@ -34,27 +34,31 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
   @protected
   String get nativeAdFactory;
 
-  StreamSubscription? _premiumSubs;
+  @protected
+  StreamSubscription? premiumSubs;
 
-  StreamSubscription? _nativeStateSubs;
+  @protected
+  StreamSubscription? nativeStateSubs;
 
-  NativeAdLoaderState? _adLoaderState;
+  @protected
+  NativeAdLoaderState? adLoaderState;
 
-  late final _premiumHolder = appInject<PremiumHolder>();
+  @protected
+  late final premiumHolder = appInject<PremiumHolder>();
 
   @override
   void dispose() {
-    _premiumSubs?.cancel();
-    _nativeStateSubs?.cancel();
+    premiumSubs?.cancel();
+    nativeStateSubs?.cancel();
     super.dispose();
   }
 
   @override
   void initState() {
-    _premiumSubs = appInject<PremiumHolder>().isPremiumStream.listen((event) {
+    premiumSubs = appInject<PremiumHolder>().isPremiumStream.listen((event) {
       setState(() {});
     });
-    _nativeStateSubs = context
+    nativeStateSubs = context
         .read<NativeAdsNotifier>()
         .loadAds(widget.nativeAdId, nativeAdFactory)
         ?.nativeLoaderState
@@ -63,7 +67,7 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
         if (event.state == DataState.error) {
           widget.onNativeError?.call();
         }
-        _adLoaderState = event;
+        adLoaderState = event;
       });
     });
     super.initState();
@@ -71,11 +75,11 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (_premiumHolder.isPremium || _nativeStateSubs == null) {
+    if (premiumHolder.isPremium || nativeStateSubs == null) {
       return Container();
     }
-    final adsState = _adLoaderState?.state ?? DataState.error;
-    final nativeAd = _adLoaderState?.nativeAd;
+    final adsState = adLoaderState?.state ?? DataState.error;
+    final nativeAd = adLoaderState?.nativeAd;
     return adsState == DataState.error
         ? Container()
         : Container(

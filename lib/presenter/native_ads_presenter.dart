@@ -19,6 +19,9 @@ class NativeAdsNotifier extends BaseChangeNotifier {
 
   late final nativeConfig = adShared.nativeScreenConfig;
 
+  late final _collapsedNativeAdsState = BehaviorSubject.seeded(false);
+  Stream<bool> get collapsedNativeAdsState => _collapsedNativeAdsState.stream;
+
   NativeAdRequester? loadAds(String requestId, String factoryId) {
     if (nativeConfig[requestId] == false) {
       return null;
@@ -35,8 +38,13 @@ class NativeAdsNotifier extends BaseChangeNotifier {
     return requester;
   }
 
+  void collapsedNative(){
+    _collapsedNativeAdsState.addSafety(false);
+  }
+
   @override
   void dispose() {
+    _collapsedNativeAdsState.close();
     nativeAdLoader.synchronized(() {
       nativeLoaderMap.forEach((key, value) {
         value.close();
@@ -49,6 +57,10 @@ class NativeAdsNotifier extends BaseChangeNotifier {
 
 class NativeAdLoaderState {
   final NativeAd? nativeAd;
+
+  void dispose() {
+    nativeAd?.dispose();
+  }
 
   final DataState state;
 
@@ -74,12 +86,16 @@ class NativeAdRequester {
       _nativeLoaderStateStreamController.stream;
 
   void close() {
+    _nativeLoaderStateStreamController.value.nativeAd?.dispose();
     _nativeLoaderStateStreamController.close();
     listener.clearReferences();
   }
 
   void updateState(NativeAdLoaderState nativeAdLoaderState) {
-    if (_nativeLoaderStateStreamController.isClosed) return;
+    if (_nativeLoaderStateStreamController.isClosed) {
+      nativeAdLoaderState.nativeAd?.dispose();
+      return;
+    }
     _nativeLoaderStateStreamController.addSafety(nativeAdLoaderState);
   }
 }

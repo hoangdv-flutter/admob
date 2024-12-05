@@ -1,6 +1,7 @@
 package com.hoangdv.admob.admob.native_ads
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -14,10 +15,8 @@ import com.hoangdv.admob.admob.ext.isVisible
 import io.flutter.plugins.googlemobileads.GoogleMobileAdsPlugin
 
 abstract class BaseNativeAdFactory(
-    private val context: Context,
-    @LayoutRes private val resLayout: Int
-) :
-    GoogleMobileAdsPlugin.NativeAdFactory {
+    private val context: Context, @LayoutRes private val resLayout: Int
+) : GoogleMobileAdsPlugin.NativeAdFactory {
 
     protected var view: View? = null
 
@@ -36,9 +35,9 @@ abstract class BaseNativeAdFactory(
     protected var adLabelV: View? = null
 
     override fun createNativeAd(
-        nativeAd: NativeAd?,
-        customOptions: MutableMap<String, Any>?
+        nativeAd: NativeAd?, customOptions: MutableMap<String, Any>?
     ): NativeAdView {
+        Log.e("createNativeAd", "${this::class.java.simpleName} called")
         view = LayoutInflater.from(context).inflate(resLayout, null)
         nativeView = view?.findViewById(R.id.native_ad_view)
         headlineV = view?.findViewById(R.id.tv_title)

@@ -22,6 +22,7 @@ dependencies:
   synchronized: any
   firebase_remote_config: any
   app_tracking_transparency: any
+  provider: any
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,5 @@
+import 'package:admob/admob.dart';
 import 'package:admob/banner/banner_ads_loader.dart';
-import 'package:admob/presenter/premium_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_core/core.dart';
@@ -21,10 +21,16 @@ class BannerWidget extends StatefulWidget {
 
 class _BannerWidgetState extends BaseState<BannerWidget> {
   late final BannerAdsLoader _bannerAdLoader = appInject<BannerAdsLoader>();
+
+  var showable = false;
+
+  late final _nativeNotifier = context.read<NativeAdsNotifier?>();
+
   late final _premiumCubit = PremiumCubit();
 
   @override
   Widget build(BuildContext context) {
+    if (!showable) return Container();
     return BlocProvider.value(
       value: _premiumCubit,
       child: StreamBuilder(
