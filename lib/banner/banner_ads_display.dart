@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:admob/admob.dart';
 import 'package:admob/banner/banner_ads_loader.dart';
 import 'package:flutter/material.dart';
@@ -24,13 +26,34 @@ class _BannerWidgetState extends BaseState<BannerWidget> {
 
   var showable = false;
 
+  StreamSubscription? _showableSubs;
+
   late final _nativeNotifier = context.read<NativeAdsNotifier?>();
 
   late final _premiumCubit = PremiumCubit();
 
   @override
+  void initState() {
+    if (_nativeNotifier == null) showable = true;
+    _showableSubs = _nativeNotifier?.collapsedNativeAdsState.listen(
+      (event) {
+        setState(
+          () {
+            showable = !event;
+          },
+        );
+      },
+    );
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (!showable) return Container();
+    if (!showable)
+      return SizedBox(
+        width: 0,
+        height: 0,
+      );
     return BlocProvider.value(
       value: _premiumCubit,
       child: StreamBuilder(
@@ -81,6 +104,7 @@ class _BannerWidgetState extends BaseState<BannerWidget> {
   void dispose() {
     _bannerAdLoader.dispose();
     _premiumCubit.close();
+    _showableSubs?.cancel();
     super.dispose();
   }
 

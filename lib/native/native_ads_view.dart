@@ -46,6 +46,12 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
   @protected
   late final premiumHolder = appInject<PremiumHolder>();
 
+  @protected
+  BoxDecoration? get decoration => null;
+
+  @protected
+  late final notifier = context.read<NativeAdsNotifier>();
+
   @override
   void dispose() {
     premiumSubs?.cancel();
@@ -55,9 +61,16 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
 
   @override
   void initState() {
+    initAds();
+    super.initState();
+  }
+
+  @protected
+  void initAds() {
     premiumSubs = appInject<PremiumHolder>().isPremiumStream.listen((event) {
       setState(() {});
     });
+    debugPrint("start load Native ad ${widget.nativeAdId}");
     nativeStateSubs = context
         .read<NativeAdsNotifier>()
         .loadAds(widget.nativeAdId, nativeAdFactory)
@@ -66,12 +79,20 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
       setState(() {
         if (event.state == DataState.error) {
           widget.onNativeError?.call();
+          onFailedToLoad();
+        } else if (event.state == DataState.loaded) {
+          onAdLoaded();
         }
         adLoaderState = event;
       });
     });
-    super.initState();
   }
+
+  @protected
+  void onFailedToLoad() {}
+
+  @protected
+  void onAdLoaded() {}
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +105,7 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
         ? Container()
         : Container(
             height: widget.adSize,
-            decoration: widget.decoration,
+            decoration: widget.decoration ?? decoration,
             padding: EdgeInsets.all(2.w),
             margin: widget.margin,
             child: Center(

@@ -1,12 +1,50 @@
+import 'dart:async';
+
 import 'package:admob/native/native_ads_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_core/core.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 abstract class CollapsedNativeAdWidgetState extends NativeAdWidgetState {
+  @override
   BoxDecoration? get decoration => BoxDecoration(color: Colors.white);
 
   var collapsed = false;
+
+  StreamSubscription? _showableSubs;
+
+  @override
+  void initAds() {
+    if (notifier.nativeConfig[widget.nativeAdId] != false) {
+      super.initAds();
+    } else {
+      notifier.collapsedNative();
+    }
+    _showableSubs = notifier.collapsedNativeAdsState.listen(
+      (event) {
+        setState(() {
+          collapsed = !event;
+        });
+      },
+    );
+    // super.initState();
+  }
+
+  @override
+  void onFailedToLoad() {
+    notifier.setNativeLoaderState(false);
+  }
+
+  @override
+  void onAdLoaded() {
+    notifier.setNativeLoaderState(true);
+  }
+
+  @override
+  void dispose() {
+    _showableSubs?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +71,7 @@ abstract class CollapsedNativeAdWidgetState extends NativeAdWidgetState {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                                 IconButton(
-                                    onPressed: () => setState(() {
-                                          collapsed = true;
-                                        }),
+                                    onPressed: () => notifier.collapsedNative(),
                                     icon: Icon(Icons.expand_more_rounded)),
                                 Expanded(child: AdWidget(ad: nativeAd))
                               ])

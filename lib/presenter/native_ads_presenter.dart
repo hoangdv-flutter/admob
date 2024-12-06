@@ -8,8 +8,12 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:synchronized/extension.dart';
 
+part 'collapsed_native_state.dart';
+
 class NativeAdsNotifier extends BaseChangeNotifier {
-  NativeAdsNotifier();
+  final bool useCollapsedNative;
+
+  NativeAdsNotifier({this.useCollapsedNative = false});
 
   late final nativeLoaderMap = <String, NativeAdRequester>{};
 
@@ -19,8 +23,19 @@ class NativeAdsNotifier extends BaseChangeNotifier {
 
   late final nativeConfig = adShared.nativeScreenConfig;
 
-  late final _collapsedNativeAdsState = BehaviorSubject.seeded(false);
+  late final _collapsedNativeAdsState =
+      BehaviorSubject.seeded(useCollapsedNative);
   Stream<bool> get collapsedNativeAdsState => _collapsedNativeAdsState.stream;
+
+  late final _collapsedNativeSuccess = BehaviorSubject.seeded(true);
+  Stream<bool> get collapsedNativeSuccess => _collapsedNativeSuccess.stream;
+
+  void setNativeLoaderState(bool success) {
+    _collapsedNativeSuccess.addSafety(success);
+    if (!success) {
+      _collapsedNativeAdsState.addSafety(false);
+    }
+  }
 
   NativeAdRequester? loadAds(String requestId, String factoryId) {
     if (nativeConfig[requestId] == false) {
@@ -38,13 +53,14 @@ class NativeAdsNotifier extends BaseChangeNotifier {
     return requester;
   }
 
-  void collapsedNative(){
+  void collapsedNative() {
     _collapsedNativeAdsState.addSafety(false);
   }
 
   @override
   void dispose() {
     _collapsedNativeAdsState.close();
+    _collapsedNativeSuccess.close();
     nativeAdLoader.synchronized(() {
       nativeLoaderMap.forEach((key, value) {
         value.close();
