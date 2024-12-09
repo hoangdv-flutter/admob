@@ -25,7 +25,8 @@ class NativeAdsNotifier extends BaseChangeNotifier {
 
   late final _collapsedNativeAdsState =
       BehaviorSubject.seeded(useCollapsedNative);
-  Stream<bool> get collapsedNativeAdsState => _collapsedNativeAdsState.stream;
+  ValueStream<bool> get collapsedNativeAdsState =>
+      _collapsedNativeAdsState.stream;
 
   late final _collapsedNativeSuccess = BehaviorSubject.seeded(true);
   Stream<bool> get collapsedNativeSuccess => _collapsedNativeSuccess.stream;
