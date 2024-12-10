@@ -32,30 +32,31 @@ extension ContextExt on BuildContext {
       return;
     }
     (appInject<InterstitialLoader>()).show(
+        context: this,
         adLoaderListener: AdLoaderListener(onAdFailedToLoad: () {
-      adLoaderListener?.onAdFailedToLoad?.call();
-    }, onInterPassed: () async {
-      try {
-        final r = isReplacement
-            ? await Navigator.pushReplacement(this, route)
-            : await Navigator.push(this, route);
-        completer.complete(r);
-        if (interWhenBack) {
-          GlobalAdListener.onBackPressedIOS?.call(this);
-        }
-      } catch (e) {
-        completer.complete(Response.failed(e));
-      }
-      adLoaderListener?.onInterPassed?.call();
-    }, onAdConsume: () {
-      adLoaderListener?.onAdConsume?.call();
-    }, onAdStartShow: () {
-      adLoaderListener?.onAdStartShow?.call();
-    }, onAdClosed: () {
-      adLoaderListener?.onAdClosed?.call();
-    }, onAdFailedToShow: () {
-      adLoaderListener?.onAdFailedToShow?.call();
-    }));
+          adLoaderListener?.onAdFailedToLoad?.call();
+        }, onInterPassed: () async {
+          try {
+            final r = isReplacement
+                ? await Navigator.pushReplacement(this, route)
+                : await Navigator.push(this, route);
+            completer.complete(r);
+            if (interWhenBack) {
+              GlobalAdListener.onBackPressedIOS?.call(this);
+            }
+          } catch (e) {
+            completer.complete(Response.failed(e));
+          }
+          adLoaderListener?.onInterPassed?.call();
+        }, onAdConsume: () {
+          adLoaderListener?.onAdConsume?.call();
+        }, onAdStartShow: () {
+          adLoaderListener?.onAdStartShow?.call();
+        }, onAdClosed: () {
+          adLoaderListener?.onAdClosed?.call();
+        }, onAdFailedToShow: () {
+          adLoaderListener?.onAdFailedToShow?.call();
+        }));
 
     return await completer.future;
   }
@@ -75,20 +76,21 @@ extension ContextExt on BuildContext {
           return;
         }
         (appInject<InterstitialLoader>()).show(
+            context: this,
             adLoaderListener: AdLoaderListener(onAdFailedToLoad: () {
-          adLoaderListener?.onAdFailedToLoad?.call();
-        }, onInterPassed: () {
-          Navigator.of(this, rootNavigator: true).pop(result);
-          adLoaderListener?.onInterPassed?.call();
-        }, onAdConsume: () {
-          adLoaderListener?.onAdConsume?.call();
-        }, onAdStartShow: () {
-          adLoaderListener?.onAdStartShow?.call();
-        }, onAdClosed: () {
-          adLoaderListener?.onAdClosed?.call();
-        }, onAdFailedToShow: () {
-          adLoaderListener?.onAdFailedToShow?.call();
-        }));
+              adLoaderListener?.onAdFailedToLoad?.call();
+            }, onInterPassed: () {
+              Navigator.of(this, rootNavigator: true).pop(result);
+              adLoaderListener?.onInterPassed?.call();
+            }, onAdConsume: () {
+              adLoaderListener?.onAdConsume?.call();
+            }, onAdStartShow: () {
+              adLoaderListener?.onAdStartShow?.call();
+            }, onAdClosed: () {
+              adLoaderListener?.onAdClosed?.call();
+            }, onAdFailedToShow: () {
+              adLoaderListener?.onAdFailedToShow?.call();
+            }));
       }
     } catch (e) {}
   }

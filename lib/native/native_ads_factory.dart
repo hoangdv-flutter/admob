@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 class NativeAdsFactory {
   static const smallNativeBanner = "smallNativeAdView";
   static const mediumNativeBanner = "mediumNativeAdView";
+  static const fullScreenNativeAd = "fullScreenNativeAd";
 }
 
 @injectable

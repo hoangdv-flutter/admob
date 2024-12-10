@@ -26,4 +26,23 @@ class AdLoaderListener {
       this.onAdStartShow,
       this.onAdClosed,
       this.onAdFailedToShow});
+
+  AdLoaderListener copyWith({
+    Function()? onAdFailedToLoad,
+    Function()? onAdConsume,
+    Function()? onAdStartShow,
+    Function()? onAdClosed,
+    Function()? onAdFailedToShow,
+    Function()? onInterPassed,
+    bool? triggerFailedToLoad,
+  }) {
+    return AdLoaderListener(
+      onAdFailedToLoad: onAdFailedToLoad ?? this.onAdFailedToLoad,
+      onAdConsume: onAdConsume ?? this.onAdConsume,
+      onAdStartShow: onAdStartShow ?? this.onAdStartShow,
+      onAdClosed: onAdClosed ?? this.onAdClosed,
+      onAdFailedToShow: onAdFailedToShow ?? this.onAdFailedToShow,
+      onInterPassed: onInterPassed ?? this.onInterPassed,
+    );
+  }
 }

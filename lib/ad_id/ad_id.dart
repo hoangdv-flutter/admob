@@ -22,4 +22,6 @@ abstract class AdId {
   String get rewardedInterAdUnitId;
 
   String get appOpenAdUnitId;
+
+  String get fullScreenNativeId;
 }

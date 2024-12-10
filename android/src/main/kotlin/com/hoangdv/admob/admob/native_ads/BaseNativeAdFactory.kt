@@ -37,7 +37,6 @@ abstract class BaseNativeAdFactory(
     override fun createNativeAd(
         nativeAd: NativeAd?, customOptions: MutableMap<String, Any>?
     ): NativeAdView {
-        Log.e("createNativeAd", "${this::class.java.simpleName} called")
         view = LayoutInflater.from(context).inflate(resLayout, null)
         nativeView = view?.findViewById(R.id.native_ad_view)
         headlineV = view?.findViewById(R.id.tv_title)

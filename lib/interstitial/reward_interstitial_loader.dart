@@ -1,6 +1,5 @@
 part of 'interstitial_ad.dart';
 
-
 @singleton
 class RewardInterLoader extends FullScreenAdsLoader<RewardedInterstitialAd> {
   RewardInterLoader(@Named(AdId.namedAdId) this.adId);
@@ -23,10 +22,11 @@ class RewardInterLoader extends FullScreenAdsLoader<RewardedInterstitialAd> {
   }
 
   @override
-  Future<bool> show({AdLoaderListener? adLoaderListener}) {
+  Future<bool> show(
+      {BuildContext? context, AdLoaderListener? adLoaderListener}) {
     _showWhenReady = true;
     if (appInject<AdsLoader>().isInitial) MobileAds.instance.setAppMuted(false);
-    return super.show(adLoaderListener: adLoaderListener);
+    return super.show(context: context, adLoaderListener: adLoaderListener);
   }
 
   @override

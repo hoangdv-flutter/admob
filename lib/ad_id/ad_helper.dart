@@ -58,4 +58,9 @@ class AdHelper extends AdId {
   String get appOpenAdUnitId => (_forceDebugMode || kDebugMode)
       ? debugAdId.appOpenAdUnitId
       : releaseAdId.appOpenAdUnitId;
+
+  @override
+  String get fullScreenNativeId => (_forceDebugMode || kDebugMode)
+      ? debugAdId.fullScreenNativeId
+      : releaseAdId.fullScreenNativeId;
 }

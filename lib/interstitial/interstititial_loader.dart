@@ -8,14 +8,18 @@ class InterstitialLoader extends FullScreenAdsLoader<InterstitialAd> {
 
   final AdId adID;
 
-  InterstitialLoader(
-      this._adShared, @Named(AdId.namedAdId) this.adID, this._premiumHolder);
+  final FullScreenNativeLoader nativeLoader;
+
+  InterstitialLoader(this._adShared, @Named(AdId.namedAdId) this.adID,
+      this._premiumHolder, this.nativeLoader);
 
   late final flow = WaterFlow(waterFlowIds: [
     adID.interHighAdUnitId,
     adID.interMediumAdUnitId,
     adID.interAllPriceAdUnitId
   ], adShared: _adShared, normalIds: adID.normalInterAdUnitId);
+
+  late final nativeFullscreenConfig = _adShared.fullScreenNativeConfig;
 
   @override
   void onAdLoaded(InterstitialAd ads) {
@@ -61,17 +65,25 @@ class InterstitialLoader extends FullScreenAdsLoader<InterstitialAd> {
   }
 
   @override
-  Future<bool> show({AdLoaderListener? adLoaderListener}) async {
+  Future<bool> show(
+      {BuildContext? context, AdLoaderListener? adLoaderListener}) async {
+    final newCallback = context == null ||
+            !nativeFullscreenConfig.fullscreenNativeAfterInter
+        ? adLoaderListener
+        : adLoaderListener?.copyWith(
+            onInterPassed: () =>
+                nativeLoader.show(context, adLoaderListener: adLoaderListener),
+          );
     if (_premiumHolder.isPremium) {
-      adLoaderListener?.onInterPassed?.call();
+      newCallback?.onInterPassed?.call();
       return true;
     }
     if (!_adShared.canShowInterstitial || !flow.validToRequestAds) {
-      adLoaderListener?.onInterPassed?.call();
+      newCallback?.onInterPassed?.call();
       return false;
     }
     if (appInject<AdsLoader>().isInitial) MobileAds.instance.setAppMuted(true);
-    return await super.show(adLoaderListener: adLoaderListener);
+    return await super.show(context: context, adLoaderListener: newCallback);
   }
 
   @override

@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:admob/admob.dart';
 import 'package:admob/app_open/app_open_ads_loader.dart';
 import 'package:admob/banner/banner_config.dart';
 import 'package:admob/full_screen_ads_loader.dart';
+import 'package:flutter_core/core.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,6 +42,9 @@ class AdShared {
   static final bannerConfigKey = "${_prefix}bannerConfig";
 
   static final interSplashEnabledKey = "${_prefix}interSplashEnabled";
+
+  static final fullScreenNativeConfigKey =
+      "${_prefix}full_screen_native_ad_config";
 
   AdShared(this.sharedPreferences);
 
@@ -99,7 +104,7 @@ class AdShared {
       sharedPreferences.setBool(_isMonetization, value);
 
   int get interstitialGap =>
-      sharedPreferences.getInt(_interstitialGap) ?? 60000;
+      5000; //sharedPreferences.getInt(_interstitialGap) ?? 60000;
 
   set interstitialGap(value) =>
       sharedPreferences.setInt(_interstitialGap, value);
@@ -149,4 +154,27 @@ class AdShared {
 
   set interSplashEnabled(bool value) =>
       sharedPreferences.setBool(interSplashEnabledKey, value);
+
+  String? get fullScreenNativeConfigJSON =>
+      sharedPreferences.getString(fullScreenNativeConfigKey) ?? "{}";
+
+  set fullScreenNativeConfigJSON(String? value) {
+    sharedPreferences.setString(fullScreenNativeConfigKey, '''
+    {
+  "fullscreen_native_after_inter": true,
+  "duration_in_seconds": 5
+}
+    ''');
+  }
+
+  FullScreenNativeConfig get fullScreenNativeConfig =>
+      fullScreenNativeConfigJSON?.let(
+        call: (value) => FullScreenNativeConfig.fromJson(jsonDecode(value)),
+      ) ??
+      FullScreenNativeConfig.defaultConfig();
+
+  set fullScreenNativeConfig(FullScreenNativeConfig value) {
+    sharedPreferences.setString(
+        fullScreenNativeConfigKey, jsonEncode(value.toJson()));
+  }
 }

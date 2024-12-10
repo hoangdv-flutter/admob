@@ -89,8 +89,10 @@ class NativeAdRequester {
       BehaviorSubject<NativeAdLoaderState>();
 
   late final listener = ObjectReference(NativeLoaderListener(
-    onAdLoaded: (ad) =>
-        updateState(NativeAdLoaderState(state: DataState.loaded, nativeAd: ad)),
+    onAdLoaded: (ad) async {
+      await Future.delayed(Duration(milliseconds: 1000));
+      updateState(NativeAdLoaderState(state: DataState.loaded, nativeAd: ad));
+    },
     onAdFailedToLoad: (e) =>
         updateState(NativeAdLoaderState(state: DataState.error)),
     onAdLoading: () =>

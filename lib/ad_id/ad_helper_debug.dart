@@ -31,7 +31,7 @@ class AdHelperDebug extends AdId {
 
   @override
   String get interHighAdUnitId {
-   return normalInterAdUnitId;
+    return normalInterAdUnitId;
   }
 
   @override
@@ -87,4 +87,7 @@ class AdHelperDebug extends AdId {
       throw UnsupportedError("Unsupported platform");
     }
   }
+
+  @override
+  String get fullScreenNativeId => "ca-app-pub-3940256099942544/7342230711";
 }

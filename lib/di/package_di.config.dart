@@ -11,12 +11,15 @@
 import 'package:admob/ad_id/ad_helper.dart' as _i508;
 import 'package:admob/ad_id/ad_helper_debug.dart' as _i394;
 import 'package:admob/ad_id/ad_id.dart' as _i837;
+import 'package:admob/admob.dart' as _i755;
 import 'package:admob/ads_loader.dart' as _i632;
 import 'package:admob/app_lifecycle_reactor.dart' as _i1027;
 import 'package:admob/app_open/app_open_ads_loader.dart' as _i273;
 import 'package:admob/banner/banner_ads_loader.dart' as _i661;
 import 'package:admob/data/firebase_remote_datasource.dart' as _i987;
 import 'package:admob/interstitial/interstitial_ad.dart' as _i318;
+import 'package:admob/native/full_screen/full_screen_native_loader.dart'
+    as _i629;
 import 'package:admob/native/native_ads_factory.dart' as _i212;
 import 'package:admob/native/native_ads_loader.dart' as _i598;
 import 'package:admob/shared/ads_shared.dart' as _i484;
@@ -58,22 +61,28 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i318.RewardLoader(gh<_i837.AdId>(instanceName: 'globalAdId')),
       dispose: (i) => i.dispose(),
     );
+    gh.singleton<_i629.FullScreenNativeLoader>(
+      () => _i629.FullScreenNativeLoader(
+          gh<_i837.AdId>(instanceName: 'globalAdId')),
+      dispose: (i) => i.dispose(),
+    );
     gh.factory<_i661.BannerAdsLoader>(() => _i661.BannerAdsLoader(
           gh<_i837.AdId>(instanceName: 'globalAdId'),
           gh<_i484.AdShared>(),
         ));
+    gh.lazySingleton<_i318.InterstitialLoader>(
+      () => _i318.InterstitialLoader(
+        gh<_i484.AdShared>(),
+        gh<_i837.AdId>(instanceName: 'globalAdId'),
+        gh<_i932.PremiumHolder>(),
+        gh<_i755.FullScreenNativeLoader>(),
+      ),
+      dispose: (i) => i.dispose(),
+    );
     gh.singleton<_i987.FirebaseRemoteDataSource>(
         () => _i987.FirebaseRemoteDataSource(gh<_i484.AdShared>()));
     gh.lazySingleton<_i598.NativeAdsLoader>(
       () => _i598.NativeAdsLoader(
-        gh<_i837.AdId>(instanceName: 'globalAdId'),
-        gh<_i932.PremiumHolder>(),
-      ),
-      dispose: (i) => i.dispose(),
-    );
-    gh.lazySingleton<_i318.InterstitialLoader>(
-      () => _i318.InterstitialLoader(
-        gh<_i484.AdShared>(),
         gh<_i837.AdId>(instanceName: 'globalAdId'),
         gh<_i932.PremiumHolder>(),
       ),
