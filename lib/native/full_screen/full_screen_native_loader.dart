@@ -9,9 +9,9 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:injectable/injectable.dart';
 import 'package:synchronized/synchronized.dart';
 
+part 'full_screen_native_config.dart';
 part 'full_screen_native_screen.dart';
 part 'full_screen_native_view.dart';
-part 'full_screen_native_config.dart';
 
 @singleton
 class FullScreenNativeLoader {
@@ -47,7 +47,7 @@ class FullScreenNativeLoader {
     if (_loading) return;
     _loading = true;
     NativeAd(
-            adUnitId: adId.normalInterAdUnitId,
+            adUnitId: adId.fullScreenNativeId,
             factoryId: NativeAdsFactory.fullScreenNativeAd,
             listener: NativeAdListener(
                 onAdFailedToLoad: (ad, error) {
