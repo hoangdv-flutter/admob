@@ -63,7 +63,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i629.FullScreenNativeLoader>(
       () => _i629.FullScreenNativeLoader(
-          gh<_i837.AdId>(instanceName: 'globalAdId')),
+        gh<_i837.AdId>(instanceName: 'globalAdId'),
+        gh<_i484.AdShared>(),
+      ),
       dispose: (i) => i.dispose(),
     );
     gh.factory<_i661.BannerAdsLoader>(() => _i661.BannerAdsLoader(

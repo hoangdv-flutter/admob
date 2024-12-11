@@ -23,7 +23,9 @@ part 'presenter/full_screen_native_notifier.dart';
 class FullScreenNativeLoader {
   final AdId adId;
 
-  FullScreenNativeLoader(@Named(AdId.namedAdId) this.adId);
+  final AdShared adShared;
+
+  FullScreenNativeLoader(@Named(AdId.namedAdId) this.adId, this.adShared);
 
   final lock = Lock(reentrant: true);
 
@@ -36,6 +38,7 @@ class FullScreenNativeLoader {
     if (nativeAd != null) {
       await context.pushScreen(FullScreenNativeScreen.newRoute(nativeAd!));
       adLoaderListener?.onInterPassed?.call();
+      adShared.lastTimeShowInterAds = DateTime.now().millisecondsSinceEpoch;
       _clearNativeAd();
       fetchAd();
     } else {
