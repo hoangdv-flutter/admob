@@ -88,6 +88,8 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       dispose: (i) => i.dispose(),
     );
+    gh.factory<_i629.FullscreenNativeNotifier>(
+        () => _i629.FullscreenNativeNotifier(gh<_i484.AdShared>()));
     gh.singleton<_i273.AppOpenAdsLoader>(
       () => _i273.AppOpenAdsLoader(
         gh<_i932.PremiumHolder>(),

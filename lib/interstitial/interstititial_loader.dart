@@ -67,19 +67,25 @@ class InterstitialLoader extends FullScreenAdsLoader<InterstitialAd> {
   @override
   Future<bool> show(
       {BuildContext? context, AdLoaderListener? adLoaderListener}) async {
-    final newCallback = context == null ||
-            !nativeFullscreenConfig.fullscreenNativeAfterInter
-        ? adLoaderListener
-        : adLoaderListener?.copyWith(
-            onInterPassed: () =>
-                nativeLoader.show(context, adLoaderListener: adLoaderListener),
-          );
+    final newCallback =
+        context == null || !nativeFullscreenConfig.fullscreenNativeAfterInter
+            ? adLoaderListener
+            : adLoaderListener?.copyWith(
+                onAdStartShow: () {
+                  nativeLoader.fetchAd();
+                  adLoaderListener.onAdStartShow?.call();
+                },
+                onInterPassed: () {
+                  return nativeLoader.show(context,
+                      adLoaderListener: adLoaderListener);
+                },
+              );
     if (_premiumHolder.isPremium) {
       newCallback?.onInterPassed?.call();
       return true;
     }
     if (!_adShared.canShowInterstitial || !flow.validToRequestAds) {
-      newCallback?.onInterPassed?.call();
+      adLoaderListener?.onInterPassed?.call();
       return false;
     }
     if (appInject<AdsLoader>().isInitial) MobileAds.instance.setAppMuted(true);
