@@ -19,8 +19,6 @@ class InterstitialLoader extends FullScreenAdsLoader<InterstitialAd> {
     adID.interAllPriceAdUnitId
   ], adShared: _adShared, normalIds: adID.normalInterAdUnitId);
 
-  late final nativeFullscreenConfig = _adShared.fullScreenNativeConfig;
-
   @override
   void onAdLoaded(InterstitialAd ads) {
     super.onAdLoaded(ads);
@@ -68,7 +66,7 @@ class InterstitialLoader extends FullScreenAdsLoader<InterstitialAd> {
   Future<bool> show(
       {BuildContext? context, AdLoaderListener? adLoaderListener}) async {
     final newCallback =
-        context == null || !nativeFullscreenConfig.fullscreenNativeAfterInter
+        context == null || !_adShared.fullScreenNativeConfig.fullscreenNativeAfterInter
             ? adLoaderListener
             : adLoaderListener?.copyWith(
                 onAdStartShow: () {

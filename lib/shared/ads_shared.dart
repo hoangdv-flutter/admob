@@ -156,10 +156,16 @@ class AdShared {
       sharedPreferences.setBool(interSplashEnabledKey, value);
 
   String? get fullScreenNativeConfigJSON =>
-      sharedPreferences.getString(fullScreenNativeConfigKey) ?? "{}";
+      sharedPreferences.getString(fullScreenNativeConfigKey) ??
+      '''
+    {
+  "fullscreen_native_after_inter": true,
+  "duration_in_seconds": 5
+}
+    ''';
 
   set fullScreenNativeConfigJSON(String? value) {
-    sharedPreferences.setString(fullScreenNativeConfigKey, '''
+    sharedPreferences.setString(fullScreenNativeConfigKey, value?? '''
     {
   "fullscreen_native_after_inter": true,
   "duration_in_seconds": 5
