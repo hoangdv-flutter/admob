@@ -79,7 +79,7 @@ class InterstitialLoader extends FullScreenAdsLoader<InterstitialAd> {
                 },
               );
     if (_premiumHolder.isPremium) {
-      newCallback?.onInterPassed?.call();
+      adLoaderListener?.onInterPassed?.call();
       return true;
     }
     if (!_adShared.canShowInterstitial || !flow.validToRequestAds) {
