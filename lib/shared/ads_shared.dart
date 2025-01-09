@@ -133,7 +133,7 @@ class AdShared {
 
   Map<String, bool> get nativeScreenConfig =>
       (jsonDecode(nativeScreenConfigJson) as Map<String, dynamic>).map(
-        (key, value) => MapEntry(key, bool.tryParse(value) ?? true),
+        (key, value) => MapEntry(key, value as bool),
       );
 
   String get bannerConfigJson =>
