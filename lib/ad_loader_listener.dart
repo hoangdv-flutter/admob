@@ -9,7 +9,7 @@ class AdLoaderListener {
 
   final Function()? onAdFailedToShow;
 
-  final Function()? onInterPassed;
+  Function()? onInterPassed;
 
   bool _triggerFailedToLoad = false;
 

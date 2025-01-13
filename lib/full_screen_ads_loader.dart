@@ -44,6 +44,8 @@ abstract class FullScreenAdsLoader<T extends Ad> {
         adLoaderListener?.onAdFailedToShow?.call();
         onLoadNextAds();
         streamSubs?.cancel();
+        adLoaderListener?.onInterPassed?.call();
+        adLoaderListener?.onInterPassed = null;
         appInject<AdShared>().lastTimeShowInterAds =
             DateTime.now().millisecondsSinceEpoch;
       },
@@ -61,6 +63,7 @@ abstract class FullScreenAdsLoader<T extends Ad> {
         streamSubs = GlobalAdListener.appState.listen((value) {
           if (value == AppLifecycleState.resumed) {
             adLoaderListener?.onInterPassed?.call();
+            adLoaderListener?.onInterPassed = null;
             streamSubs?.cancel();
           }
         });
