@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:admob/ad_loader_listener.dart';
 import 'package:admob/ads_loader.dart';
+import 'package:admob/listener/global_listener.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_core/core.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -30,33 +33,41 @@ abstract class FullScreenAdsLoader<T extends Ad> {
 
   @protected
   FullScreenContentCallback<T> getFullScreenContentCallback(
-          {AdLoaderListener? adLoaderListener}) =>
-      FullScreenContentCallback(
-        onAdFailedToShowFullScreenContent: (ad, error) {
-          isShowing = false;
-          ad.dispose();
-          loaderState = DataState.error;
-          adLoaderListener?.onInterPassed?.call();
-          adLoaderListener?.onAdFailedToShow?.call();
-          onLoadNextAds();
-          appInject<AdShared>().lastTimeShowInterAds =
-              DateTime.now().millisecondsSinceEpoch;
-        },
-        onAdDismissedFullScreenContent: (ad) {
-          isShowing = false;
-          loaderState = DataState.idle;
-          adLoaderListener?.onAdClosed?.call();
-          adLoaderListener?.onInterPassed?.call();
-          ad.dispose();
-          availableAds = null;
-          onLoadNextAds();
-          appInject<AdShared>().lastTimeShowInterAds =
-              DateTime.now().millisecondsSinceEpoch;
-        },
-        onAdShowedFullScreenContent: (ad) {
-          adLoaderListener?.onAdStartShow?.call();
-        },
-      );
+      {AdLoaderListener? adLoaderListener}) {
+    StreamSubscription? streamSubs;
+
+    return FullScreenContentCallback(
+      onAdFailedToShowFullScreenContent: (ad, error) {
+        isShowing = false;
+        ad.dispose();
+        loaderState = DataState.error;
+        adLoaderListener?.onAdFailedToShow?.call();
+        onLoadNextAds();
+        streamSubs?.cancel();
+        appInject<AdShared>().lastTimeShowInterAds =
+            DateTime.now().millisecondsSinceEpoch;
+      },
+      onAdDismissedFullScreenContent: (ad) {
+        isShowing = false;
+        loaderState = DataState.idle;
+        adLoaderListener?.onAdClosed?.call();
+        ad.dispose();
+        availableAds = null;
+        onLoadNextAds();
+        appInject<AdShared>().lastTimeShowInterAds =
+            DateTime.now().millisecondsSinceEpoch;
+      },
+      onAdShowedFullScreenContent: (ad) {
+        streamSubs = GlobalAdListener.appState.listen((value) {
+          if (value == AppLifecycleState.resumed) {
+            adLoaderListener?.onInterPassed?.call();
+            streamSubs?.cancel();
+          }
+        });
+        adLoaderListener?.onAdStartShow?.call();
+      },
+    );
+  }
 
   Future<bool> show(
       {BuildContext? context, AdLoaderListener? adLoaderListener}) async {

@@ -8,6 +8,7 @@ export 'native/full_screen/full_screen_native_loader.dart';
 export 'native/normal_native_view.dart';
 export 'presenter/native_ads_presenter.dart';
 export 'presenter/premium_cubit.dart';
+export 'package:admob/components/app_ads.dart';
 
 class Admob {
   Future<String?> getPlatformVersion() {

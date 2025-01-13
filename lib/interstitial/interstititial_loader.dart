@@ -92,10 +92,10 @@ class InterstitialLoader extends FullScreenAdsLoader<InterstitialAd> {
 
   @override
   Future<void> onShow(InterstitialAd ads,
-      {AdLoaderListener? adLoaderListener}) {
+      {AdLoaderListener? adLoaderListener}) async {
     ads.fullScreenContentCallback =
         getFullScreenContentCallback(adLoaderListener: adLoaderListener);
-    return ads.show();
+    await ads.show();
   }
 
   @override
