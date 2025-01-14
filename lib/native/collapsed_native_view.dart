@@ -70,9 +70,17 @@ abstract class CollapsedNativeAdWidgetState extends NativeAdWidgetState {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                                IconButton(
-                                    onPressed: () => notifier.collapsedNative(),
-                                    icon: Icon(Icons.expand_more_rounded)),
+                                Padding(
+                                  padding: EdgeInsets.all(1.p),
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                        borderRadius:
+                                            BorderRadius.circular(4.p),
+                                        onTap: () => notifier.collapsedNative(),
+                                        child: Icon(Icons.expand_more_rounded)),
+                                  ),
+                                ),
                                 Expanded(child: AdWidget(ad: nativeAd))
                               ])
                         : Container(),

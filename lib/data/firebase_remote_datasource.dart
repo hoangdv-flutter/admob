@@ -45,7 +45,8 @@ class FirebaseRemoteDataSource extends RemoteDataSource {
       AdShared.nativeAdsConfigKey: shared.nativeScreenConfigJson,
       AdShared.fullScreenNativeConfigKey: shared.fullScreenNativeConfigJSON,
     });
-    await process(() => _remote.fetchAndActivate());
+    final r = await process(() => _remote.fetchAndActivate());
+    if (r.value != true) return;
     shared.isMonetization = _remote.getBool(_isMonetization);
     shared.appOpenGap = _remote.getInt(_appOpenGap);
     shared.interstitialGap = _remote.getInt(_interAdsGap);

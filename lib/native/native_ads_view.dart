@@ -106,7 +106,6 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
         : Container(
             height: widget.adSize,
             decoration: widget.decoration ?? decoration,
-            padding: EdgeInsets.all(2.w),
             margin: widget.margin,
             child: Center(
               child: adsState == DataState.loading
