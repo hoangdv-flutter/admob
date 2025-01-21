@@ -104,7 +104,7 @@ class AdShared {
       sharedPreferences.setBool(_isMonetization, value);
 
   int get interstitialGap =>
-      5000;//sharedPreferences.getInt(_interstitialGap) ?? 60000;
+      sharedPreferences.getInt(_interstitialGap) ?? 60000;
 
   set interstitialGap(value) =>
       sharedPreferences.setInt(_interstitialGap, value);
@@ -137,14 +137,13 @@ class AdShared {
     }
     try {
       return (jsonDecode(nativeScreenConfigJson) as Map<String, dynamic>).map(
-            (key, value) => MapEntry(key, value as bool),
+        (key, value) => MapEntry(key, value as bool),
       );
     } catch (e) {
       print('Error decoding JSON: $e');
       return {};
     }
   }
-
 
   String get bannerConfigJson =>
       sharedPreferences.getString(bannerConfigKey) ?? "{}";
@@ -175,7 +174,10 @@ class AdShared {
     ''';
 
   set fullScreenNativeConfigJSON(String? value) {
-    sharedPreferences.setString(fullScreenNativeConfigKey, value?? '''
+    sharedPreferences.setString(
+        fullScreenNativeConfigKey,
+        value ??
+            '''
     {
   "fullscreen_native_after_inter": true,
   "duration_in_seconds": 5

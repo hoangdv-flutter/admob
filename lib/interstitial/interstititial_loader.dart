@@ -65,7 +65,7 @@ class InterstitialLoader extends FullScreenAdsLoader<InterstitialAd> {
   @override
   Future<bool> show(
       {BuildContext? context, AdLoaderListener? adLoaderListener}) async {
-    final newCallback =
+    final newCallback  =
         context == null || !_adShared.fullScreenNativeConfig.fullscreenNativeAfterInter
             ? adLoaderListener
             : adLoaderListener?.copyWith(
