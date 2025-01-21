@@ -75,8 +75,9 @@ abstract class FullScreenAdsLoader<T extends Ad> {
   Future<bool> show(
       {BuildContext? context, AdLoaderListener? adLoaderListener}) async {
     if (availableAds == null) {
-      load(adLoaderListener: adLoaderListener);
       adLoaderListener?.onInterPassed?.call();
+      adLoaderListener?.onInterPassed = null;
+      load(adLoaderListener: adLoaderListener);
       return false;
     }
     try {
