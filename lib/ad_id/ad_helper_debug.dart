@@ -89,5 +89,13 @@ class AdHelperDebug extends AdId {
   }
 
   @override
-  String get fullScreenNativeId => "ca-app-pub-3940256099942544/7342230711";
+  String get fullScreenNativeId {
+    if(Platform.isAndroid) {
+      return "ca-app-pub-3940256099942544/7342230711";
+    }else if(Platform.isIOS) {
+      return "ca-app-pub-3940256099942544/5406332512";
+    }else {
+      throw UnsupportedError("Unsupported platform");
+    }
+  }
 }
