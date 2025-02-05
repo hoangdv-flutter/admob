@@ -60,6 +60,12 @@ class NativeAdsLoader {
                     _onAdLoaded(
                         factoryID, ad as NativeAd, nativeLoaderListener);
                   },
+                  onAdOpened: (ad){
+                    _onAdOpen(nativeLoaderListener);
+                  },
+                  onAdClosed: (ad){
+                    _onAdClose(nativeLoaderListener);
+                  },
                   onPaidEvent: GlobalAdListener.onPaidEventCallback),
               nativeAdOptions: NativeAdOptions(
                   videoOptions: VideoOptions(
@@ -79,6 +85,18 @@ class NativeAdsLoader {
         return;
       }
       nativeLoaderListener.value?.onAdLoaded?.call(nativeAd);
+    });
+  }
+
+  Future<void> _onAdOpen(ObjectReference<NativeLoaderListener> nativeLoaderListener) async {
+    await lock.synchronized(() {
+      nativeLoaderListener.value?.onAdOpen?.call();
+    });
+  }
+
+  Future<void> _onAdClose(ObjectReference<NativeLoaderListener> nativeLoaderListener) async {
+    await lock.synchronized(() {
+      nativeLoaderListener.value?.onAdClose?.call();
     });
   }
 

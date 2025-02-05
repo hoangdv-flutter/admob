@@ -33,7 +33,11 @@ abstract class NormalNativeAdState extends NativeAdWidgetState {
               if (event.state == DataState.error) {
                 widget.onNativeError?.call();
               }else if(event.state == DataState.loaded) {
-                onAdLoadedNative();
+                onNativeAdLoaded();
+              }else if (event.state == DataState.open) {
+                onAdOpen();
+              }else if (event.state == DataState.close) {
+                onAdClose();
               }
               adLoaderState = event;
             });
@@ -44,5 +48,11 @@ abstract class NormalNativeAdState extends NativeAdWidgetState {
   }
 
   @protected
-  void onAdLoadedNative() {}
+  void onNativeAdLoaded() {}
+
+  @protected
+  void onAdOpen() {}
+
+  @protected
+  void onAdClose() {}
 }

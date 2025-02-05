@@ -25,10 +25,12 @@ class NativeAdsNotifier extends BaseChangeNotifier {
 
   late final _collapsedNativeAdsState =
       BehaviorSubject.seeded(useCollapsedNative);
+
   ValueStream<bool> get collapsedNativeAdsState =>
       _collapsedNativeAdsState.stream;
 
   late final _collapsedNativeSuccess = BehaviorSubject.seeded(true);
+
   Stream<bool> get collapsedNativeSuccess => _collapsedNativeSuccess.stream;
 
   void setNativeLoaderState(bool success) {
@@ -97,6 +99,8 @@ class NativeAdRequester {
         updateState(NativeAdLoaderState(state: DataState.error)),
     onAdLoading: () =>
         updateState(NativeAdLoaderState(state: DataState.loading)),
+    onAdOpen: () => updateState(NativeAdLoaderState(state: DataState.open)),
+    onAdClose: () => updateState(NativeAdLoaderState(state: DataState.close)),
   ));
 
   DataState get state => nativeLoaderState.valueOrNull?.state ?? DataState.idle;

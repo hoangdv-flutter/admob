@@ -7,6 +7,14 @@ class NativeLoaderListener {
 
   final Function()? onAdLoading;
 
+  final Function()? onAdOpen;
+
+  final Function()? onAdClose;
+
   NativeLoaderListener(
-      {this.onAdLoading, this.onAdLoaded, this.onAdFailedToLoad});
+      {this.onAdLoading,
+      this.onAdLoaded,
+      this.onAdFailedToLoad,
+      this.onAdOpen,
+      this.onAdClose});
 }
