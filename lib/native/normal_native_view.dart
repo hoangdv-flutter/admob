@@ -1,7 +1,7 @@
 import 'dart:async';
-
 import 'package:admob/native/native_ads_view.dart';
 import 'package:admob/presenter/native_ads_presenter.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_core/core.dart';
 import 'package:flutter_core/data/shared/premium_holder.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +32,8 @@ abstract class NormalNativeAdState extends NativeAdWidgetState {
             setState(() {
               if (event.state == DataState.error) {
                 widget.onNativeError?.call();
+              }else if(event.state == DataState.loaded) {
+                onAdLoadedNative();
               }
               adLoaderState = event;
             });
@@ -40,4 +42,7 @@ abstract class NormalNativeAdState extends NativeAdWidgetState {
       },
     );
   }
+
+  @protected
+  void onAdLoadedNative() {}
 }
