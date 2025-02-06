@@ -27,7 +27,7 @@ class AppLifecycleReactor {
   void _onAppStateChange(AppState state) {
     _appStateController.addSafety(state);
     if (state == AppState.foreground) {
-      appOpenAdsLoader.show();
+      // appOpenAdsLoader.show();
     }
   }
 

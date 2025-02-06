@@ -68,7 +68,7 @@ class AdsLoader {
     ]));
     await MobileAds.instance.initialize().then((value) {
       isInitial = true;
-      _appOpenAdsLoader.loadAd();
+      // _appOpenAdsLoader.loadAd();
     }, onError: (e) {
       isInitial = false;
       return _init();
