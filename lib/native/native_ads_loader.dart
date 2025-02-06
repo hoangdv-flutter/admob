@@ -25,7 +25,7 @@ class NativeAdsLoader {
   NativeAdsLoader(@Named(AdId.namedAdId) this.adId, this.premiumHolder);
 
   Future<void> fetchAds(String factoryID,
-      ObjectReference<NativeLoaderListener> nativeLoaderListener) async {
+      ObjectReference<NativeLoaderListener> nativeLoaderListener, bool fullScreen) async {
     if (!appInject<AdsLoader>().isInitial) return;
     await lock.synchronized(() {
       if (premiumHolder.isPremium) {
@@ -39,18 +39,18 @@ class NativeAdsLoader {
         availableAds.removeFirst();
         return;
       }
-      _loadAds(factoryID, nativeLoaderListener);
+      _loadAds(factoryID, nativeLoaderListener, fullScreen);
     });
   }
 
   Future<void> _loadAds(String factoryID,
-      ObjectReference<NativeLoaderListener> nativeLoaderListener) async {
+      ObjectReference<NativeLoaderListener> nativeLoaderListener, bool fullScreen) async {
     await lock.synchronized(() async {
       if (listeners.contains(nativeLoaderListener)) return;
       nativeLoaderListener.value?.onAdLoading?.call();
       listeners.add(nativeLoaderListener);
       NativeAd(
-              adUnitId: adId.nativeAdUnitID,
+              adUnitId: fullScreen ? adId.fullScreenNativeId : adId.nativeAdUnitID,
               factoryId: factoryID,
               listener: NativeAdListener(
                   onAdFailedToLoad: (ad, error) {

@@ -40,7 +40,7 @@ class NativeAdsNotifier extends BaseChangeNotifier {
     }
   }
 
-  NativeAdRequester? loadAds(String requestId, String factoryId) {
+  NativeAdRequester? loadAds(String requestId, String factoryId, bool fullScreen) {
     if (nativeConfig[requestId] == false) {
       return null;
     }
@@ -52,7 +52,7 @@ class NativeAdsNotifier extends BaseChangeNotifier {
       debugPrint("native ad old State ${requester.state}");
       return requester;
     }
-    nativeAdLoader.fetchAds(factoryId, requester.listener);
+    nativeAdLoader.fetchAds(factoryId, requester.listener, fullScreen);
     return requester;
   }
 

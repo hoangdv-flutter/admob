@@ -11,8 +11,11 @@ import 'package:shimmer/shimmer.dart';
 
 abstract class NativeAdWidget extends StatefulWidget {
   final String nativeAdId;
+  final bool? fullScreen;
 
   final Function()? onNativeError;
+
+  final Function()? onNextScreen;
 
   const NativeAdWidget(
       {Key? key,
@@ -20,7 +23,9 @@ abstract class NativeAdWidget extends StatefulWidget {
       required this.decoration,
       required this.margin,
       required this.adSize,
-      this.onNativeError})
+      this.onNativeError,
+      this.onNextScreen,
+      required this.fullScreen})
       : super(key: key);
 
   final BoxDecoration? decoration;
@@ -73,7 +78,7 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
     debugPrint("start load Native ad ${widget.nativeAdId}");
     nativeStateSubs = context
         .read<NativeAdsNotifier>()
-        .loadAds(widget.nativeAdId, nativeAdFactory)
+        .loadAds(widget.nativeAdId, nativeAdFactory, widget.fullScreen ?? false)
         ?.nativeLoaderState
         .listen((event) {
       setState(() {
@@ -113,7 +118,9 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
                   : adsState == DataState.error
                       ? const Text("error")
                       : adsState == DataState.loaded && nativeAd != null
-                          ? AdWidget(ad: nativeAd)
+                          ? (widget.fullScreen == true
+                              ? buildFullScreenAds(nativeAd)
+                              : AdWidget(ad: nativeAd))
                           : Container(),
             ),
           );
@@ -168,4 +175,46 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
       ),
     );
   }
+
+  Widget buildFullScreenAds(NativeAd nativeAd) => Stack(
+        children: [
+          Positioned.fill(child: AdWidget(ad: nativeAd)),
+          buildButtonNext()
+        ],
+      );
+
+  Widget buildButtonNext() => Container(
+        alignment: Alignment.topRight,
+        margin: EdgeInsets.all(2.p),
+        child: IconButton(
+          onPressed: (){
+            widget.onNextScreen?.call();
+          },
+          icon: Container(
+            padding: EdgeInsets.symmetric(vertical: 2.p, horizontal: 3.p),
+            decoration: BoxDecoration(
+              color: Color(0xFF7B5CFA),
+              borderRadius: BorderRadius.circular(6.p),
+              border: Border.all(color: Color(0xFFEBECF0), width: 1),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Next",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold),
+                ),
+                SizedBox(width: 1.p),
+                Icon(
+                  Icons.arrow_forward,
+                  color: Colors.white,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
 }
