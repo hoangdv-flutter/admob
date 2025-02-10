@@ -81,7 +81,10 @@ class AppOpenAdsLoader {
   Future<void> loadAd() async {
     _loadOpenAdsAppState.addSafety(DataState.loading);
     await Future.delayed(Duration(milliseconds: 1000));
-    if (_premiumHolder.isPremium) return;
+    if (_premiumHolder.isPremium) {
+      _loadOpenAdsAppState.addSafety(DataState.error);
+      return ;
+    }
     if (!appInject<AdsLoader>().isInitial) {
       _loadOpenAdsAppState.addSafety(DataState.error);
       return ;
