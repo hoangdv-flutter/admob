@@ -87,6 +87,8 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
           onFailedToLoad();
         } else if (event.state == DataState.loaded) {
           onAdLoaded();
+        } else if(event.state == DataState.open) {
+          onAdOpened();
         }
         adLoaderState = event;
       });
@@ -98,6 +100,9 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
 
   @protected
   void onAdLoaded() {}
+
+  @protected
+  void onAdOpened() {}
 
   @override
   Widget build(BuildContext context) {

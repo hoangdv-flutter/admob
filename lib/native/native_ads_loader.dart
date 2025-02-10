@@ -3,6 +3,7 @@ import 'package:admob/ads_loader.dart';
 import 'package:admob/listener/global_listener.dart';
 import 'package:admob/native/native_ads_factory.dart';
 import 'package:admob/native/native_loader_listener.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_core/core.dart';
 import 'package:flutter_core/data/obj_references.dart';
 import 'package:flutter_core/data/shared/premium_holder.dart';
@@ -24,8 +25,10 @@ class NativeAdsLoader {
 
   NativeAdsLoader(@Named(AdId.namedAdId) this.adId, this.premiumHolder);
 
-  Future<void> fetchAds(String factoryID,
-      ObjectReference<NativeLoaderListener> nativeLoaderListener, bool fullScreen) async {
+  Future<void> fetchAds(
+      String factoryID,
+      ObjectReference<NativeLoaderListener> nativeLoaderListener,
+      bool fullScreen) async {
     if (!appInject<AdsLoader>().isInitial) return;
     await lock.synchronized(() {
       if (premiumHolder.isPremium) {
@@ -43,8 +46,10 @@ class NativeAdsLoader {
     });
   }
 
-  Future<void> _loadAds(String factoryID,
-      ObjectReference<NativeLoaderListener> nativeLoaderListener, bool fullScreen) async {
+  Future<void> _loadAds(
+      String factoryID,
+      ObjectReference<NativeLoaderListener> nativeLoaderListener,
+      bool fullScreen) async {
     await lock.synchronized(() async {
       if (listeners.contains(nativeLoaderListener)) return;
       nativeLoaderListener.value?.onAdLoading?.call();
@@ -60,11 +65,8 @@ class NativeAdsLoader {
                     _onAdLoaded(
                         factoryID, ad as NativeAd, nativeLoaderListener);
                   },
-                  onAdOpened: (ad){
-                    _onAdOpen(nativeLoaderListener);
-                  },
-                  onAdClosed: (ad){
-                    _onAdClose(nativeLoaderListener);
+                  onAdClicked: (ad) {
+                    _onAdClicked(nativeLoaderListener);
                   },
                   onPaidEvent: GlobalAdListener.onPaidEventCallback),
               nativeAdOptions: NativeAdOptions(
@@ -88,15 +90,10 @@ class NativeAdsLoader {
     });
   }
 
-  Future<void> _onAdOpen(ObjectReference<NativeLoaderListener> nativeLoaderListener) async {
+  Future<void> _onAdClicked(
+      ObjectReference<NativeLoaderListener> nativeLoaderListener) async {
     await lock.synchronized(() {
       nativeLoaderListener.value?.onAdOpen?.call();
-    });
-  }
-
-  Future<void> _onAdClose(ObjectReference<NativeLoaderListener> nativeLoaderListener) async {
-    await lock.synchronized(() {
-      nativeLoaderListener.value?.onAdClose?.call();
     });
   }
 

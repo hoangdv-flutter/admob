@@ -41,6 +41,9 @@ abstract class CollapsedNativeAdWidgetState extends NativeAdWidgetState {
   }
 
   @override
+  onAdOpened() {}
+
+  @override
   void dispose() {
     _showableSubs?.cancel();
     super.dispose();
