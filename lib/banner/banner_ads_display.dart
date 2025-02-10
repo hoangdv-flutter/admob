@@ -21,12 +21,16 @@ class BannerWidget extends StatefulWidget {
   State<BannerWidget> createState() => _BannerWidgetState();
 }
 
-class _BannerWidgetState extends BaseState<BannerWidget> {
+class _BannerWidgetState extends BaseState<BannerWidget> with WidgetsBindingObserver{
   late final BannerAdsLoader _bannerAdLoader = appInject<BannerAdsLoader>();
 
   var showable = false;
 
+  var reloadBanner = false;
+
   StreamSubscription? _showableSubs;
+
+  StreamSubscription? _reloadBannerSub;
 
   late final _nativeNotifier = context.read<NativeAdsNotifier?>();
 
@@ -44,7 +48,22 @@ class _BannerWidgetState extends BaseState<BannerWidget> {
         );
       },
     );
+    _reloadBannerSub = _bannerAdLoader.reloadBanner.listen((value) {
+      if (value == true) {
+        reloadBanner = true;
+      }
+    });
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if(state == AppLifecycleState.resumed && reloadBanner) {
+      reloadBanner = false;
+      loadBanner();
+    }
   }
 
   @override
@@ -105,21 +124,29 @@ class _BannerWidgetState extends BaseState<BannerWidget> {
     _bannerAdLoader.dispose();
     _premiumCubit.close();
     _showableSubs?.cancel();
+    _reloadBannerSub?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
-  Widget _buildAds(BuildContext context) {
+  void loadBanner() {
     _bannerAdLoader.load(
         extras: widget.collapsibleDirection != null
             ? {"collapsible": "${widget.collapsibleDirection?.name}"}
             : null,
         id: widget.bannerId);
+  }
+
+  Widget _buildAds(BuildContext context) {
+    loadBanner();
     return StreamBuilder(
       builder: (context, snapshot) => Container(
         color: Colors.white,
         width: double.infinity,
         child: snapshot.hasData
-            ? _buildBanner(snapshot.data!)
+            ? snapshot.data == null
+                ? _buildLoading()
+                : _buildBanner(snapshot.data!)
             : snapshot.hasError
                 ? Container()
                 : _buildLoading(),

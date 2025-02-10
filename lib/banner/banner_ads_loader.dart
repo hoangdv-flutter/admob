@@ -4,8 +4,9 @@ import 'package:admob/ad_id/ad_id.dart';
 import 'package:admob/ads_loader.dart';
 import 'package:admob/listener/global_listener.dart';
 import 'package:admob/shared/ads_shared.dart';
-import 'package:flutter_core/data/executable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_core/core.dart';
+import 'package:flutter_core/data/executable.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rxdart/rxdart.dart';
@@ -24,11 +25,15 @@ class BannerAdsLoader extends Executable {
 
   final _bannerAdStreamController = BehaviorSubject<BannerAd?>();
 
+  final _reloadBanner = BehaviorSubject.seeded(false);
+  Stream<bool> get reloadBanner => _reloadBanner.stream;
+
   BannerAd? _bannerAd;
 
   bool _loadable = true;
 
   void load({required String id, Map<String, String>? extras}) {
+    _reloadBanner.addSafety(false);
     final config = configs[id];
     if (config?.showable == false) {
       _bannerAdStreamController
@@ -37,19 +42,26 @@ class BannerAdsLoader extends Executable {
     }
     if (!_loadable) return;
     _loadable = false;
+    _bannerAdStreamController.addSafety(null);
     if (!appInject<AdsLoader>().isInitial) return;
     BannerAd(
             size: AdSize.banner,
             adUnitId: adId.bannerAdUnitId,
             listener: BannerAdListener(
               onAdLoaded: (ad) {
+                _loadable = true;
                 _bannerAd = ad as BannerAd?;
                 _bannerAdStreamController.addSafety(_bannerAd);
               },
               onPaidEvent: GlobalAdListener.onPaidEventCallback,
               onAdFailedToLoad: (ad, error) async {
+                _loadable = true;
                 ad.dispose();
                 _bannerAdStreamController.addErrorSafety(error);
+              },
+              onAdClicked: (ad) {
+                _loadable = true;
+                _reloadBanner.addSafety(true);
               },
             ),
             request: AdRequest(
@@ -63,6 +75,7 @@ class BannerAdsLoader extends Executable {
 
   @override
   Future<void> dispose() async {
+    _reloadBanner.close();
     _bannerAdStreamController.close();
     _bannerAd?.dispose();
   }
