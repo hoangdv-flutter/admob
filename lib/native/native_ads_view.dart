@@ -87,7 +87,7 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
           onFailedToLoad();
         } else if (event.state == DataState.loaded) {
           onAdLoaded();
-        } else if(event.state == DataState.open) {
+        } else if (event.state == DataState.open) {
           onAdOpened();
         }
         adLoaderState = event;
@@ -113,23 +113,25 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
     final nativeAd = adLoaderState?.nativeAd;
     return adsState == DataState.error
         ? Container()
-        : Container(
-            height: widget.adSize,
-            decoration: widget.decoration ?? decoration,
-            margin: widget.margin,
-            child: Center(
-              child: adsState == DataState.loading
-                  ? buildLoading()
-                  : adsState == DataState.error
-                      ? const Text("error")
-                      : adsState == DataState.loaded && nativeAd != null
-                          ? (widget.fullScreen == true
-                              ? buildFullScreenAds(nativeAd)
-                              : AdWidget(ad: nativeAd))
-                          : Container(),
-            ),
+        : Center(
+            child: adsState == DataState.loading
+                ? baseAdsView(buildLoading())
+                : adsState == DataState.error
+                    ? Container()
+                    : adsState == DataState.loaded && nativeAd != null
+                        ? (widget.fullScreen == true
+                            ? buildFullScreenAds(nativeAd)
+                            : baseAdsView(AdWidget(ad: nativeAd)))
+                        : Container(),
           );
   }
+
+  Widget baseAdsView(Widget child) => Container(
+        height: widget.adSize,
+        decoration: widget.decoration ?? decoration,
+        margin: widget.margin,
+        child: child,
+      );
 
   Widget buildLoading() {
     return Shimmer.fromColors(
@@ -192,7 +194,7 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
         alignment: Alignment.topRight,
         margin: EdgeInsets.all(2.p),
         child: IconButton(
-          onPressed: (){
+          onPressed: () {
             widget.onNextScreen?.call();
           },
           icon: Container(

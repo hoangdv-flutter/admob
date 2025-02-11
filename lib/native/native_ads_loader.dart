@@ -3,7 +3,6 @@ import 'package:admob/ads_loader.dart';
 import 'package:admob/listener/global_listener.dart';
 import 'package:admob/native/native_ads_factory.dart';
 import 'package:admob/native/native_loader_listener.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_core/core.dart';
 import 'package:flutter_core/data/obj_references.dart';
 import 'package:flutter_core/data/shared/premium_holder.dart';
@@ -93,6 +92,7 @@ class NativeAdsLoader {
   Future<void> _onAdClicked(
       ObjectReference<NativeLoaderListener> nativeLoaderListener) async {
     await lock.synchronized(() {
+      listeners.remove(nativeLoaderListener);
       nativeLoaderListener.value?.onAdOpen?.call();
     });
   }
