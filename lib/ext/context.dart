@@ -19,8 +19,8 @@ extension ContextExt on BuildContext {
     if (ignoreAds) {
       try {
         final r = isReplacement
-            ? await Navigator.pushReplacement(this, route)
-            : await Navigator.push(this, route);
+            ? await Navigator.of(this, rootNavigator: true).pushReplacement(route)
+            : await Navigator.of(this, rootNavigator: true).push(route);
         completer.complete(r);
         if (interWhenBack) {
           GlobalAdListener.onBackPressedIOS?.call(this);
@@ -38,8 +38,8 @@ extension ContextExt on BuildContext {
         }, onInterPassed: () async {
           try {
             final r = isReplacement
-                ? await Navigator.pushReplacement(this, route)
-                : await Navigator.push(this, route);
+                ? await Navigator.of(this, rootNavigator: true).pushReplacement(route)
+                : await Navigator.of(this, rootNavigator: true).push(route);
             completer.complete(r);
             if (interWhenBack) {
               GlobalAdListener.onBackPressedIOS?.call(this);
