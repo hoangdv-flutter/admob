@@ -70,7 +70,6 @@ class InterstitialLoader extends FullScreenAdsLoader<InterstitialAd> {
             ? adLoaderListener
             : adLoaderListener?.copyWith(
                 onAdStartShow: () {
-                  nativeLoader.fetchAd();
                   adLoaderListener.onAdStartShow?.call();
                 },
                 onInterPassed: () {

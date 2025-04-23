@@ -23,6 +23,8 @@ dependencies:
   app_tracking_transparency: any
   provider: any
   google_mobile_ads: any
+  native_ads:
+    path: ../../libs/native_ads/
 
 dev_dependencies:
   flutter_test:

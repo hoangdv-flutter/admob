@@ -1,10 +1,10 @@
 part of 'full_screen_native_loader.dart';
 
 class FullScreenNativeScreen extends BaseScreen {
-  static Route newRoute(NativeAd nativeAd) => RouterCreator.createRouter(
+  static Route newRoute() => RouterCreator.createRouter(
       pageBuilder: (context, animation, scondaryAnimation) =>
           FullScreenNativeScreen._(),
-      settings: RouteSettings(arguments: nativeAd),
+      settings: RouteSettings(),
       reverserDuration: Duration(milliseconds: 0),
       transitionDuration: Duration(milliseconds: 0));
 
@@ -18,7 +18,15 @@ class FullScreenNativeScreen extends BaseScreen {
           child: Scaffold(
         backgroundColor: Colors.white,
         body: Stack(children: [
-          Positioned.fill(child: AdWidget(ad: context.argument())),
+          Positioned.fill(
+            child: NativeAdTemplate(
+              adSize: 100.h,
+              factoryID: NativeAdsFactory.fullScreenNativeAd,
+              loadError: () {
+                context.popScreen();
+              },
+            ),
+          ),
           _CountDownToCloseAds()
         ]),
       )),

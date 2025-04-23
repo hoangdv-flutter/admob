@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_core/core.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:injectable/injectable.dart';
+import 'package:native_ads/native_ad_template/native_ads_template.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:synchronized/synchronized.dart';
@@ -29,54 +30,17 @@ class FullScreenNativeLoader {
 
   final lock = Lock(reentrant: true);
 
-  var _loading = false;
 
   NativeAd? nativeAd;
 
   Future<void> show(BuildContext context,
       {AdLoaderListener? adLoaderListener}) async {
-    if (nativeAd != null) {
-      await context.pushScreen(FullScreenNativeScreen.newRoute(nativeAd!));
+      await context.pushScreen(FullScreenNativeScreen.newRoute());
       adLoaderListener?.onInterPassed?.call();
       adShared.lastTimeShowInterAds = DateTime.now().millisecondsSinceEpoch;
-      _clearNativeAd();
-      fetchAd();
-    } else {
-      adLoaderListener?.onInterPassed?.call();
-      fetchAd();
-    }
-  }
-
-  void _clearNativeAd() {
-    nativeAd?.dispose();
-    nativeAd = null;
-  }
-
-  void fetchAd() {
-    if (_loading || nativeAd != null) return;
-    _loading = true;
-    NativeAd(
-            adUnitId: adId.fullScreenNativeId,
-            factoryId: NativeAdsFactory.fullScreenNativeAd,
-            listener: NativeAdListener(
-                onAdFailedToLoad: (ad, error) {
-                  _loading = false;
-                },
-                onAdLoaded: (ad) {
-                  nativeAd = ad as NativeAd;
-                  _loading = false;
-                },
-                onPaidEvent: GlobalAdListener.onPaidEventCallback),
-            nativeAdOptions: NativeAdOptions(
-                mediaAspectRatio: MediaAspectRatio.portrait,
-                videoOptions: VideoOptions(
-                    startMuted: true, customControlsRequested: false)),
-            request: const AdRequest())
-        .load();
   }
 
   @disposeMethod
   void dispose() {
-    _clearNativeAd();
   }
 }
