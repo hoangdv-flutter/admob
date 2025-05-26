@@ -47,7 +47,7 @@ class AdShared {
 
   static final adsPlanConfigKey = "adsPlanConfig";
 
-  static final showInterConfigKey = "showInterConfigKey";
+  static final showInterConfigKey = "showInterConfig";
 
   static final rewardInterGapKey = "rewardInterGap";
 
