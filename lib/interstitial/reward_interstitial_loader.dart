@@ -23,7 +23,9 @@ class RewardInterLoader extends FullScreenAdsLoader<RewardedInterstitialAd> {
 
   @override
   Future<bool> show(
-      {BuildContext? context, AdLoaderListener? adLoaderListener}) {
+      {BuildContext? context,
+      AdLoaderListener? adLoaderListener,
+      String? adsID}) {
     _showWhenReady = true;
     if (appInject<AdsLoader>().isInitial) MobileAds.instance.setAppMuted(false);
     return super.show(context: context, adLoaderListener: adLoaderListener);
@@ -42,6 +44,8 @@ class RewardInterLoader extends FullScreenAdsLoader<RewardedInterstitialAd> {
             onAdLoaded(ad);
             if (_showWhenReady) {
               show(adLoaderListener: adLoaderListener);
+              appInject<AdShared>().lastTimeShowReward =
+                  DateTime.now().millisecondsSinceEpoch;
             }
           },
           onAdFailedToLoad: (error) {

@@ -19,6 +19,8 @@ class AdShared {
 
   static const _lastTimeShowAppOpenAds = "last_time_show_app_open_ads";
 
+  static const _lastTimeShowReward = "_lastTimeShowReward";
+
   static const _lastTimeLoadAds = "lastTimeLoadAds";
 
   static const _minGapWaterFloorAds = "minGapWaterFloorAds";
@@ -43,6 +45,12 @@ class AdShared {
 
   static final interSplashEnabledKey = "${_prefix}interSplashEnabled";
 
+  static final adsPlanConfigKey = "adsPlanConfig";
+
+  static final showInterConfigKey = "showInterConfigKey";
+
+  static final rewardInterGapKey = "rewardInterGap";
+
   static final fullScreenNativeConfigKey =
       "${_prefix}full_screen_native_ad_config";
 
@@ -65,12 +73,19 @@ class AdShared {
   set lastTimeLoadAds(value) =>
       sharedPreferences.setInt(_lastTimeLoadAds, value);
 
+  set lastTimeShowReward(int value) =>
+      sharedPreferences.setInt(_lastTimeShowReward, value);
+
+  int get lastTimeShowReward =>
+      sharedPreferences.getInt(_lastTimeShowReward) ?? 0;
+
   bool get _canShowFullScreenAds =>
       !FullScreenAdsLoader.isShowing && !AppOpenAdsLoader.isShowing;
 
   bool get canShowInterstitial {
     return DateTime.now().millisecondsSinceEpoch - lastTimeShowInterAds >
-            interstitialGap &&
+            interstitialGap && DateTime.now().millisecondsSinceEpoch - lastTimeShowReward >
+        rewardInterGap &&
         DateTime.now().millisecondsSinceEpoch - lastTimeShowAppOpenAds >
             fullScreenTimeGap &&
         _canShowFullScreenAds;
@@ -118,6 +133,10 @@ class AdShared {
 
   set fullScreenTimeGap(value) =>
       sharedPreferences.setInt(_fullscreenTimeGap, value);
+
+  int get rewardInterGap => sharedPreferences.getInt(rewardInterGapKey) ?? 30000;
+
+  set rewardInterGap(value) => sharedPreferences.setInt(rewardInterGapKey, value);
 
   bool get useInterOnBack =>
       sharedPreferences.getBool(useInterOnBackKey) ?? true;
@@ -194,5 +213,30 @@ class AdShared {
   set fullScreenNativeConfig(FullScreenNativeConfig value) {
     sharedPreferences.setString(
         fullScreenNativeConfigKey, jsonEncode(value.toJson()));
+  }
+
+  int get adsPlanConfig => sharedPreferences.getInt(adsPlanConfigKey) ?? 2;
+
+  set adsPlanConfig(int value) =>
+      sharedPreferences.setInt(adsPlanConfigKey, value);
+
+  String get showInterConfigJson =>
+      sharedPreferences.getString(showInterConfigKey) ?? "{}";
+
+  set showInterConfigJson(String value) =>
+      sharedPreferences.setString(showInterConfigKey, value);
+
+  Map<String, bool> get showInterConfig {
+    if (showInterConfigJson.isEmpty) {
+      return {};
+    }
+    try {
+      return (jsonDecode(showInterConfigJson) as Map<String, dynamic>).map(
+        (key, value) => MapEntry(key, value as bool),
+      );
+    } catch (e) {
+      print('Error decoding JSON: $e');
+      return {};
+    }
   }
 }

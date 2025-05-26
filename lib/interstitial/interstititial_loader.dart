@@ -64,20 +64,25 @@ class InterstitialLoader extends FullScreenAdsLoader<InterstitialAd> {
 
   @override
   Future<bool> show(
-      {BuildContext? context, AdLoaderListener? adLoaderListener}) async {
-    final newCallback  =
-        context == null || !_adShared.fullScreenNativeConfig.fullscreenNativeAfterInter
-            ? adLoaderListener
-            : adLoaderListener?.copyWith(
-                onAdStartShow: () {
-                  adLoaderListener.onAdStartShow?.call();
-                },
-                onInterPassed: () {
-                  return nativeLoader.show(context,
-                      adLoaderListener: adLoaderListener);
-                },
-              );
+      {BuildContext? context,
+      AdLoaderListener? adLoaderListener,
+      String? adsID}) async {
+    final newCallback = context == null ||
+            !_adShared.fullScreenNativeConfig.fullscreenNativeAfterInter
+        ? adLoaderListener
+        : adLoaderListener?.copyWith(onAdStartShow: () {
+            adLoaderListener.onAdStartShow?.call();
+          }, onInterPassed: () {
+            return nativeLoader.show(context,
+                adLoaderListener: adLoaderListener);
+          });
     if (_premiumHolder.isPremium) {
+      adLoaderListener?.onInterPassed?.call();
+      return true;
+    }
+    if (_adShared.adsPlanConfig == 2 &&
+        (_adShared.showInterConfig[adsID] == false ||
+            _adShared.showInterConfig[adsID] == null)) {
       adLoaderListener?.onInterPassed?.call();
       return true;
     }

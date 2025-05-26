@@ -9,6 +9,8 @@ class AdLoaderListener {
 
   final Function()? onAdFailedToShow;
 
+  final Function()? onAdClick;
+
   Function()? onInterPassed;
 
   bool _triggerFailedToLoad = false;
@@ -25,7 +27,8 @@ class AdLoaderListener {
       this.onAdConsume,
       this.onAdStartShow,
       this.onAdClosed,
-      this.onAdFailedToShow});
+      this.onAdFailedToShow,
+      this.onAdClick, });
 
   AdLoaderListener copyWith({
     Function()? onAdFailedToLoad,
@@ -34,6 +37,8 @@ class AdLoaderListener {
     Function()? onAdClosed,
     Function()? onAdFailedToShow,
     Function()? onInterPassed,
+    Function()? onAdClick,
+
     bool? triggerFailedToLoad,
   }) {
     return AdLoaderListener(
@@ -43,6 +48,7 @@ class AdLoaderListener {
       onAdClosed: onAdClosed ?? this.onAdClosed,
       onAdFailedToShow: onAdFailedToShow ?? this.onAdFailedToShow,
       onInterPassed: onInterPassed ?? this.onInterPassed,
+      onAdClick: onAdClick ?? this.onAdClick
     );
   }
 }

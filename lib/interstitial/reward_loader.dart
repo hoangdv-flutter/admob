@@ -25,7 +25,7 @@ class RewardLoader extends FullScreenAdsLoader<RewardedAd> {
 
   @override
   Future<bool> show(
-      {BuildContext? context, AdLoaderListener? adLoaderListener}) {
+      {BuildContext? context, AdLoaderListener? adLoaderListener, String? adsID}) {
     _showWhenReady = true;
     if (appInject<AdsLoader>().isInitial) MobileAds.instance.setAppMuted(false);
     return super.show(adLoaderListener: adLoaderListener, context: context);

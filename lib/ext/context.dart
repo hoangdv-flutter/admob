@@ -9,17 +9,23 @@ import 'package:flutter_core/core.dart';
 import 'package:flutter_core/data/response.dart';
 
 extension ContextExt on BuildContext {
-  Future<dynamic> pushScreenWithAds<T>(Route<T> route,
-      {bool ignoreAds = false,
-      bool isReplacement = false,
-      AdLoaderListener? adLoaderListener}) async {
+  Future<dynamic> pushScreenWithAds<T>(
+    Route<T> route, {
+    required String adsID,
+    bool ignoreAds = false,
+    bool isReplacement = false,
+    AdLoaderListener? adLoaderListener,
+  }) async {
     final adShared = appInject<AdShared>();
     final interWhenBack = adShared.useInterOnBack;
     final completer = Completer<dynamic>();
     if (ignoreAds) {
       try {
         final r = isReplacement
-            ? await Navigator.of(this, rootNavigator: true).pushReplacement(route)
+            ? await Navigator.of(
+                this,
+                rootNavigator: true,
+              ).pushReplacement(route)
             : await Navigator.of(this, rootNavigator: true).push(route);
         completer.complete(r);
         if (interWhenBack) {
@@ -32,13 +38,19 @@ extension ContextExt on BuildContext {
       return;
     }
     (appInject<InterstitialLoader>()).show(
-        context: this,
-        adLoaderListener: AdLoaderListener(onAdFailedToLoad: () {
+      adsID: adsID,
+      context: this,
+      adLoaderListener: AdLoaderListener(
+        onAdFailedToLoad: () {
           adLoaderListener?.onAdFailedToLoad?.call();
-        }, onInterPassed: () async {
+        },
+        onInterPassed: () async {
           try {
             final r = isReplacement
-                ? await Navigator.of(this, rootNavigator: true).pushReplacement(route)
+                ? await Navigator.of(
+                    this,
+                    rootNavigator: true,
+                  ).pushReplacement(route)
                 : await Navigator.of(this, rootNavigator: true).push(route);
             completer.complete(r);
             if (interWhenBack) {
@@ -48,21 +60,28 @@ extension ContextExt on BuildContext {
             completer.complete(Response.failed(e));
           }
           adLoaderListener?.onInterPassed?.call();
-        }, onAdConsume: () {
+        },
+        onAdConsume: () {
           adLoaderListener?.onAdConsume?.call();
-        }, onAdStartShow: () {
+        },
+        onAdStartShow: () {
           adLoaderListener?.onAdStartShow?.call();
-        }, onAdClosed: () {
+        },
+        onAdClosed: () {
           adLoaderListener?.onAdClosed?.call();
-        }, onAdFailedToShow: () {
+        },
+        onAdFailedToShow: () {
           adLoaderListener?.onAdFailedToShow?.call();
-        }));
+        },
+      ),
+    );
 
     return await completer.future;
   }
 
   popScreenWithAds<T extends Object?>(
-      {T? result,
+      {required String adsID,
+      T? result,
       bool ignoreAds = false,
       AdLoaderListener? adLoaderListener}) async {
     try {
@@ -76,6 +95,7 @@ extension ContextExt on BuildContext {
           return;
         }
         (appInject<InterstitialLoader>()).show(
+            adsID: adsID,
             context: this,
             adLoaderListener: AdLoaderListener(onAdFailedToLoad: () {
               adLoaderListener?.onAdFailedToLoad?.call();

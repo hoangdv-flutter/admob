@@ -17,9 +17,10 @@ dependencies:
   flutter_bloc: any
   shimmer: any
   flutter_core:
-    path: ../flutter_core/
+    path: ../../flutter_core/
   synchronized: any
   firebase_remote_config: any
+  firebase_analytics: any
   app_tracking_transparency: any
   provider: any
   google_mobile_ads: any

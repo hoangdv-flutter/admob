@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:admob/ad_loader_listener.dart';
 import 'package:admob/ads_loader.dart';
+import 'package:admob/data/firebase_analytics_service.dart';
 import 'package:admob/listener/global_listener.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_core/core.dart';
@@ -27,6 +28,8 @@ abstract class FullScreenAdsLoader<T extends Ad> {
 
   T? availableAds;
 
+  late final _analytics = appInject<FirebaseAnalyticsService>();
+
   void setLoaderState(DataState state) {
     loaderState = state;
   }
@@ -37,52 +40,62 @@ abstract class FullScreenAdsLoader<T extends Ad> {
     StreamSubscription? streamSubs;
 
     return FullScreenContentCallback(
-      onAdFailedToShowFullScreenContent: (ad, error) {
-        isShowing = false;
-        ad.dispose();
-        loaderState = DataState.error;
-        adLoaderListener?.onAdFailedToShow?.call();
-        onLoadNextAds();
-        streamSubs?.cancel();
-        adLoaderListener?.onInterPassed?.call();
-        adLoaderListener?.onInterPassed = null;
-        appInject<AdShared>().lastTimeShowInterAds =
-            DateTime.now().millisecondsSinceEpoch;
-      },
-      onAdDismissedFullScreenContent: (ad) {
-        isShowing = false;
-        loaderState = DataState.idle;
-        adLoaderListener?.onAdClosed?.call();
-        ad.dispose();
-        availableAds = null;
-        onLoadNextAds();
-        appInject<AdShared>().lastTimeShowInterAds =
-            DateTime.now().millisecondsSinceEpoch;
-      },
-      onAdShowedFullScreenContent: (ad) {
-        streamSubs = GlobalAdListener.appState.listen((value) {
-          if (value == AppLifecycleState.resumed) {
-            adLoaderListener?.onInterPassed?.call();
-            adLoaderListener?.onInterPassed = null;
-            streamSubs?.cancel();
-          }
-        });
-        adLoaderListener?.onAdStartShow?.call();
-      },
-    );
+        onAdFailedToShowFullScreenContent: (ad, error) {
+      isShowing = false;
+      ad.dispose();
+      loaderState = DataState.error;
+      adLoaderListener?.onAdFailedToShow?.call();
+      onLoadNextAds();
+      streamSubs?.cancel();
+      adLoaderListener?.onInterPassed?.call();
+      adLoaderListener?.onInterPassed = null;
+      appInject<AdShared>().lastTimeShowInterAds =
+          DateTime.now().millisecondsSinceEpoch;
+    }, onAdDismissedFullScreenContent: (ad) {
+      isShowing = false;
+      loaderState = DataState.idle;
+      adLoaderListener?.onAdClosed?.call();
+      ad.dispose();
+      availableAds = null;
+      onLoadNextAds();
+      appInject<AdShared>().lastTimeShowInterAds =
+          DateTime.now().millisecondsSinceEpoch;
+    }, onAdShowedFullScreenContent: (ad) {
+      streamSubs = GlobalAdListener.appState.listen((value) {
+        if (value == AppLifecycleState.resumed) {
+          adLoaderListener?.onInterPassed?.call();
+          adLoaderListener?.onInterPassed = null;
+          streamSubs?.cancel();
+        }
+      });
+      adLoaderListener?.onAdStartShow?.call();
+    }, onAdClicked: (ad) {
+      adLoaderListener?.onAdClick?.call();
+    });
   }
 
   Future<bool> show(
-      {BuildContext? context, AdLoaderListener? adLoaderListener}) async {
+      {BuildContext? context,
+      AdLoaderListener? adLoaderListener,
+      String? adsID}) async {
     if (availableAds == null) {
       adLoaderListener?.onInterPassed?.call();
       adLoaderListener?.onInterPassed = null;
       load(adLoaderListener: adLoaderListener);
       return false;
     }
+    final listenerWithCompleter = adLoaderListener?.copyWith(onAdStartShow: () {
+      if (adsID == null) return;
+      _analytics.logEventParameter(
+          "impression_inter_screen", "impression_inter_screen", adsID);
+    }, onAdClick: () {
+      if (adsID == null) return;
+      _analytics.logEventParameter(
+          "click_inter_screen", "click_inter_screen", adsID);
+    });
     try {
       isShowing = true;
-      await onShow(availableAds as T, adLoaderListener: adLoaderListener);
+      await onShow(availableAds as T, adLoaderListener: listenerWithCompleter);
     } catch (e) {
       isShowing = false;
       try {

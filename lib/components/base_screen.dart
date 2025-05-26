@@ -15,7 +15,7 @@ abstract class AdsBaseScreen extends BaseScreen {
   @override
   Future<bool> onBackPressed(BuildContext context) async {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
-    context.valid?.popScreenWithAds();
+    context.valid?.popScreenWithAds(adsID: '');
     return false;
   }
 }
@@ -24,7 +24,7 @@ abstract class AdsBaseScreenState<S extends StatefulWidget>
     extends BaseScreenState<S> {
   @override
   Future<bool> onBackPressed(BuildContext context) async {
-    context.valid?.popScreenWithAds();
+    context.valid?.popScreenWithAds(adsID: '');
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
     return false;
   }

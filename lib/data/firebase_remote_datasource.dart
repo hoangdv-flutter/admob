@@ -44,6 +44,10 @@ class FirebaseRemoteDataSource extends RemoteDataSource {
       AdShared.interSplashEnabledKey: shared.interSplashEnabled,
       AdShared.nativeAdsConfigKey: shared.nativeScreenConfigJson,
       AdShared.fullScreenNativeConfigKey: shared.fullScreenNativeConfigJSON,
+      //MARK: -- Ads plan config 2
+      AdShared.adsPlanConfigKey: shared.adsPlanConfig,
+      AdShared.showInterConfigKey: shared.showInterConfigJson,
+      AdShared.rewardInterGapKey: shared.rewardInterGap
     });
     final r = await process(() => _remote.fetchAndActivate());
     if (r.value != true) return;
@@ -58,5 +62,9 @@ class FirebaseRemoteDataSource extends RemoteDataSource {
     shared.interSplashEnabled = _remote.getBool(AdShared.interSplashEnabledKey);
     shared.fullScreenNativeConfigJSON =
         _remote.getString(AdShared.fullScreenNativeConfigKey);
+    //MARK: -- Ads plan config 2
+    shared.adsPlanConfig = _remote.getInt(AdShared.adsPlanConfigKey);
+    shared.showInterConfigJson = _remote.getString(AdShared.showInterConfigKey);
+    shared.rewardInterGap = _remote.getInt(AdShared.rewardInterGapKey);
   }
 }
