@@ -80,12 +80,6 @@ class InterstitialLoader extends FullScreenAdsLoader<InterstitialAd> {
       adLoaderListener?.onInterPassed?.call();
       return true;
     }
-    if (_adShared.adsPlanConfig == 2 &&
-        (_adShared.showInterConfig[adsID] == false ||
-            _adShared.showInterConfig[adsID] == null)) {
-      adLoaderListener?.onInterPassed?.call();
-      return true;
-    }
     if (!_adShared.canShowInterstitial || !flow.validToRequestAds) {
       adLoaderListener?.onInterPassed?.call();
       return false;

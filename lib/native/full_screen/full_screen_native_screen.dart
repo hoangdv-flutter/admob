@@ -23,7 +23,7 @@ class FullScreenNativeScreen extends BaseScreen {
               adSize: 100.h,
               factoryID: NativeAdsFactory.fullScreenNativeAd,
               loadError: () {
-                context.popScreen();
+                context.popScreen(result: true);
               },
             ),
           ),
@@ -88,7 +88,7 @@ class _CountDownToCloseAdsState extends State<_CountDownToCloseAds> {
       child: _closeButtonState
           ? IconButton(
               onPressed: () {
-                context.popScreen();
+                context.popScreen(result: true);
               },
               style: ButtonStyle(
                   backgroundColor:

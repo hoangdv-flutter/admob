@@ -9,8 +9,7 @@ import 'package:flutter_core/core.dart';
 import 'package:flutter_core/data/response.dart';
 
 extension ContextExt on BuildContext {
-  Future<dynamic> pushScreenWithAds<T>(
-    Route<T> route, {
+  Future<dynamic> pushScreenWithAds<T>(Route<T> route, {
     required String adsID,
     bool ignoreAds = false,
     bool isReplacement = false,
@@ -18,73 +17,81 @@ extension ContextExt on BuildContext {
   }) async {
     final adShared = appInject<AdShared>();
     final interWhenBack = adShared.useInterOnBack;
-    final completer = Completer<dynamic>();
-    if (ignoreAds) {
+    final navigator = Navigator.of(this, rootNavigator: true);
+
+    Future<dynamic> pushAction() async {
       try {
-        final r = isReplacement
-            ? await Navigator.of(
-                this,
-                rootNavigator: true,
-              ).pushReplacement(route)
-            : await Navigator.of(this, rootNavigator: true).push(route);
-        completer.complete(r);
+        final result = isReplacement
+            ? await navigator.pushReplacement(route)
+            : await navigator.push(route);
         if (interWhenBack) {
           GlobalAdListener.onBackPressedIOS?.call(this);
         }
+        return result;
       } catch (e) {
-        completer.complete(Response.failed(e));
+        return Response.failed(e);
       }
-      adLoaderListener?.onInterPassed?.call();
-      return;
     }
-    (appInject<InterstitialLoader>()).show(
-      adsID: adsID,
-      context: this,
-      adLoaderListener: AdLoaderListener(
-        onAdFailedToLoad: () {
-          adLoaderListener?.onAdFailedToLoad?.call();
-        },
-        onInterPassed: () async {
-          try {
-            final r = isReplacement
-                ? await Navigator.of(
-                    this,
-                    rootNavigator: true,
-                  ).pushReplacement(route)
-                : await Navigator.of(this, rootNavigator: true).push(route);
-            completer.complete(r);
-            if (interWhenBack) {
-              GlobalAdListener.onBackPressedIOS?.call(this);
-            }
-          } catch (e) {
-            completer.complete(Response.failed(e));
-          }
-          adLoaderListener?.onInterPassed?.call();
-        },
-        onAdConsume: () {
-          adLoaderListener?.onAdConsume?.call();
-        },
-        onAdStartShow: () {
-          adLoaderListener?.onAdStartShow?.call();
-        },
-        onAdClosed: () {
-          adLoaderListener?.onAdClosed?.call();
-        },
-        onAdFailedToShow: () {
-          adLoaderListener?.onAdFailedToShow?.call();
-        },
-      ),
-    );
 
+    if (ignoreAds) {
+      final result = await pushAction();
+      adLoaderListener?.onInterPassed?.call();
+      return result;
+    }
+
+    final configs = adShared.interNativeConfig[adsID];
+    if ((configs?.showable == false || configs == null) &&
+        adShared.adsPlanConfig == 2) {
+      final result = await pushAction();
+      adLoaderListener?.onInterPassed?.call();
+      return result;
+    }
+    final completer = Completer<dynamic>();
+
+    if (configs?.nativeFullScreen == false || adShared.adsPlanConfig == 1) {
+      (appInject<InterstitialLoader>()).show(
+        adsID: adsID,
+        context: this,
+        adLoaderListener: AdLoaderListener(
+          onAdFailedToLoad: () {
+            adLoaderListener?.onAdFailedToLoad?.call();
+          },
+          onInterPassed: () async {
+            final result = await pushAction();
+            completer.complete(result);
+            adLoaderListener?.onInterPassed?.call();
+          },
+          onAdConsume: () {
+            adLoaderListener?.onAdConsume?.call();
+          },
+          onAdStartShow: () {
+            adLoaderListener?.onAdStartShow?.call();
+          },
+          onAdClosed: () {
+            adLoaderListener?.onAdClosed?.call();
+          },
+          onAdFailedToShow: () {
+            adLoaderListener?.onAdFailedToShow?.call();
+          },
+        ),
+      );
+    } else {
+      final r = await pushScreen(FullScreenNativeScreen.newRoute());
+      if (r != null) {
+        final result = await pushAction();
+        completer.complete(result);
+      }
+    }
     return await completer.future;
   }
 
-  popScreenWithAds<T extends Object?>(
-      {required String adsID,
-      T? result,
-      bool ignoreAds = false,
-      AdLoaderListener? adLoaderListener}) async {
+  popScreenWithAds<T extends Object?>({required String adsID,
+    T? result,
+    bool ignoreAds = false,
+    AdLoaderListener? adLoaderListener}) async {
     try {
+      final adShared = appInject<AdShared>();
+      final configs = adShared.interNativeConfig[adsID];
       if (Navigator.canPop(this)) {
         CrashlyticsLogger.logError(
             "pop screen ${widget.runtimeType.toString()}");
@@ -94,23 +101,41 @@ extension ContextExt on BuildContext {
           adLoaderListener?.onInterPassed?.call();
           return;
         }
-        (appInject<InterstitialLoader>()).show(
-            adsID: adsID,
-            context: this,
-            adLoaderListener: AdLoaderListener(onAdFailedToLoad: () {
-              adLoaderListener?.onAdFailedToLoad?.call();
-            }, onInterPassed: () {
-              Navigator.of(this, rootNavigator: true).pop(result);
-              adLoaderListener?.onInterPassed?.call();
-            }, onAdConsume: () {
-              adLoaderListener?.onAdConsume?.call();
-            }, onAdStartShow: () {
-              adLoaderListener?.onAdStartShow?.call();
-            }, onAdClosed: () {
-              adLoaderListener?.onAdClosed?.call();
-            }, onAdFailedToShow: () {
-              adLoaderListener?.onAdFailedToShow?.call();
-            }));
+        if ((configs?.showable == false || configs == null) &&
+            adShared.adsPlanConfig == 2) {
+          Navigator.of(this, rootNavigator: true).pop(result);
+          adLoaderListener?.onInterPassed?.call();
+          return;
+        }
+        if (configs?.nativeFullScreen == false || adShared.adsPlanConfig == 1) {
+          (appInject<InterstitialLoader>()).show(
+              adsID: adsID,
+              context: this,
+              adLoaderListener: AdLoaderListener(onAdFailedToLoad: () {
+                adLoaderListener?.onAdFailedToLoad?.call();
+              },
+                  onInterPassed: () {
+                    Navigator.of(this, rootNavigator: true).pop(result);
+                    adLoaderListener?.onInterPassed?.call();
+                  },
+                  onAdConsume: () {
+                    adLoaderListener?.onAdConsume?.call();
+                  },
+                  onAdStartShow: () {
+                    adLoaderListener?.onAdStartShow?.call();
+                  },
+                  onAdClosed: () {
+                    adLoaderListener?.onAdClosed?.call();
+                  },
+                  onAdFailedToShow: () {
+                    adLoaderListener?.onAdFailedToShow?.call();
+                  }));
+        } else {
+          final r = await pushScreen(FullScreenNativeScreen.newRoute());
+          if (r != null) {
+            Navigator.of(this, rootNavigator: true).pop(result);
+          }
+        }
       }
     } catch (e) {}
   }

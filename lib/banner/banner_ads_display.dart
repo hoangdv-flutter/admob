@@ -13,15 +13,19 @@ enum CollapsibleDirection { top, bottom }
 class BannerWidget extends StatefulWidget {
   final String bannerId;
   final CollapsibleDirection? collapsibleDirection;
+  final bool isLarge;
 
   const BannerWidget(
-      {super.key, this.collapsibleDirection, required this.bannerId});
+      {super.key,
+      this.collapsibleDirection,
+      required this.bannerId, this.isLarge = false});
 
   @override
   State<BannerWidget> createState() => _BannerWidgetState();
 }
 
-class _BannerWidgetState extends BaseState<BannerWidget> with WidgetsBindingObserver{
+class _BannerWidgetState extends BaseState<BannerWidget>
+    with WidgetsBindingObserver {
   late final BannerAdsLoader _bannerAdLoader = appInject<BannerAdsLoader>();
 
   var showable = false;
@@ -60,7 +64,7 @@ class _BannerWidgetState extends BaseState<BannerWidget> with WidgetsBindingObse
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if(state == AppLifecycleState.resumed && reloadBanner) {
+    if (state == AppLifecycleState.resumed && reloadBanner) {
       reloadBanner = false;
       loadBanner();
     }
@@ -134,7 +138,8 @@ class _BannerWidgetState extends BaseState<BannerWidget> with WidgetsBindingObse
         extras: widget.collapsibleDirection != null
             ? {"collapsible": "${widget.collapsibleDirection?.name}"}
             : null,
-        id: widget.bannerId);
+        id: widget.bannerId,
+        isLarge: widget.isLarge);
   }
 
   Widget _buildAds(BuildContext context) {

@@ -32,7 +32,7 @@ class BannerAdsLoader extends Executable {
 
   bool _loadable = true;
 
-  void load({required String id, Map<String, String>? extras}) {
+  void load({required String id, Map<String, String>? extras, bool isLarge = false}) {
     _reloadBanner.addSafety(false);
     final config = configs[id];
     if (config?.showable == false) {

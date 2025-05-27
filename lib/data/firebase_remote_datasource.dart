@@ -47,7 +47,9 @@ class FirebaseRemoteDataSource extends RemoteDataSource {
       //MARK: -- Ads plan config 2
       AdShared.adsPlanConfigKey: shared.adsPlanConfig,
       AdShared.showInterConfigKey: shared.showInterConfigJson,
-      AdShared.rewardInterGapKey: shared.rewardInterGap
+      AdShared.rewardInterGapKey: shared.rewardInterGap,
+      AdShared.maxTimeGapInterPlan2Key: shared.interstitialGapPlan2,
+      AdShared.interCollapsedNativeConfigKey: shared.interNativeConfigJson
     });
     final r = await process(() => _remote.fetchAndActivate());
     if (r.value != true) return;
@@ -66,5 +68,7 @@ class FirebaseRemoteDataSource extends RemoteDataSource {
     shared.adsPlanConfig = _remote.getInt(AdShared.adsPlanConfigKey);
     shared.showInterConfigJson = _remote.getString(AdShared.showInterConfigKey);
     shared.rewardInterGap = _remote.getInt(AdShared.rewardInterGapKey);
+    shared.interstitialGapPlan2 = _remote.getInt(AdShared.maxTimeGapInterPlan2Key);
+    shared.interNativeConfigJson = _remote.getString(AdShared.interCollapsedNativeConfigKey);
   }
 }

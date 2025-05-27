@@ -5,6 +5,7 @@ import 'package:admob/admob.dart';
 import 'package:admob/app_open/app_open_ads_loader.dart';
 import 'package:admob/banner/banner_config.dart';
 import 'package:admob/full_screen_ads_loader.dart';
+import 'package:admob/interstitial/interstitial_native_config.dart';
 import 'package:flutter_core/core.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -51,8 +52,12 @@ class AdShared {
 
   static final rewardInterGapKey = "rewardInterGap";
 
+  static final maxTimeGapInterPlan2Key = "max_time_gap_2";
+
   static final fullScreenNativeConfigKey =
       "${_prefix}full_screen_native_ad_config";
+
+  static final interCollapsedNativeConfigKey = "inter_collapsed_native_config";
 
   AdShared(this.sharedPreferences);
 
@@ -84,8 +89,9 @@ class AdShared {
 
   bool get canShowInterstitial {
     return DateTime.now().millisecondsSinceEpoch - lastTimeShowInterAds >
-            interstitialGap && DateTime.now().millisecondsSinceEpoch - lastTimeShowReward >
-        rewardInterGap &&
+            (adsPlanConfig == 2 ? interstitialGapPlan2 : interstitialGap) &&
+        DateTime.now().millisecondsSinceEpoch - lastTimeShowReward >
+            rewardInterGap &&
         DateTime.now().millisecondsSinceEpoch - lastTimeShowAppOpenAds >
             fullScreenTimeGap &&
         _canShowFullScreenAds;
@@ -124,6 +130,12 @@ class AdShared {
   set interstitialGap(value) =>
       sharedPreferences.setInt(_interstitialGap, value);
 
+  int get interstitialGapPlan2 =>
+      sharedPreferences.getInt(maxTimeGapInterPlan2Key) ?? 0;
+
+  set interstitialGapPlan2(value) =>
+      sharedPreferences.setInt(maxTimeGapInterPlan2Key, value);
+
   int get appOpenGap => sharedPreferences.getInt(_appOpenGap) ?? 15000;
 
   set appOpenGap(value) => sharedPreferences.setInt(_appOpenGap, value);
@@ -134,9 +146,11 @@ class AdShared {
   set fullScreenTimeGap(value) =>
       sharedPreferences.setInt(_fullscreenTimeGap, value);
 
-  int get rewardInterGap => sharedPreferences.getInt(rewardInterGapKey) ?? 30000;
+  int get rewardInterGap =>
+      sharedPreferences.getInt(rewardInterGapKey) ?? 30000;
 
-  set rewardInterGap(value) => sharedPreferences.setInt(rewardInterGapKey, value);
+  set rewardInterGap(value) =>
+      sharedPreferences.setInt(rewardInterGapKey, value);
 
   bool get useInterOnBack =>
       sharedPreferences.getBool(useInterOnBackKey) ?? true;
@@ -176,6 +190,18 @@ class AdShared {
   }
 
   late final bannerConfigs = <String, BannerConfig>{};
+
+  String get interNativeConfigJson => sharedPreferences.getString(interCollapsedNativeConfigKey) ?? "{}";
+
+ set interNativeConfigJson(String value) {
+   sharedPreferences.setString(interCollapsedNativeConfigKey, value);
+   interNativeConfig.clear();
+   interNativeConfig.addAll((jsonDecode(value) as Map<String, dynamic>).map(
+         (key, value) => MapEntry(key, InterstitialNativeConfig.fromJson(value)),
+   ));
+ }
+
+  late final interNativeConfig = <String, InterstitialNativeConfig>{};
 
   bool get interSplashEnabled =>
       sharedPreferences.getBool(interSplashEnabledKey) ?? true;
