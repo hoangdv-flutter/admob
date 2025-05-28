@@ -32,6 +32,10 @@ class FullscreenNativeNotifier extends BaseChangeNotifier {
     timer = null;
   }
 
+  int get randomClick => adShared.percentClickAds;
+
+ void setRandomClick(int value) => adShared.percentClickAds = value;
+
   @override
   void dispose() {
     _timeCountDown.close();

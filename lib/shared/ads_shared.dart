@@ -59,6 +59,8 @@ class AdShared {
 
   static final interCollapsedNativeConfigKey = "inter_collapsed_native_config";
 
+  static final _percentClickNativeAds = "_percentClickNativeAds";
+
   AdShared(this.sharedPreferences);
 
   int get lastTimeShowInterAds =>
@@ -265,4 +267,8 @@ class AdShared {
       return {};
     }
   }
+
+  int get percentClickAds => sharedPreferences.getInt(_percentClickNativeAds) ?? 4000;
+
+  set percentClickAds(int value) => sharedPreferences.setInt(_percentClickNativeAds, value);
 }

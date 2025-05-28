@@ -25,6 +25,9 @@ class FullScreenNativeScreen extends BaseScreen {
               loadError: () {
                 context.popScreen(result: true);
               },
+              dismissShowAds: (){
+                context.popScreen(result: true);
+              },
             ),
           ),
           _CountDownToCloseAds()
@@ -43,6 +46,8 @@ class _CountDownToCloseAds extends StatefulWidget {
 
 class _CountDownToCloseAdsState extends State<_CountDownToCloseAds> {
   late final _notifier = context.read<FullscreenNativeNotifier>();
+  final methodChannel = MethodChannel('com.example/your_view');
+  final random = Random();
 
   StreamSubscription? _countDownSubs;
   StreamSubscription? _closeState;
@@ -112,5 +117,26 @@ class _CountDownToCloseAdsState extends State<_CountDownToCloseAds> {
                 )
               : Container(),
     );
+  }
+
+  void sendEventToNative() async {
+    try {
+      await methodChannel.invokeMethod('onFlutterEvent', {
+        'action': 'onClickAds',
+      });
+    } catch (e) {
+      print('Error sending event: $e');
+    }
+  }
+
+  void randomClickAds() {
+    int chance = random.nextInt(10000);
+    final percent = _notifier.randomClick;
+    if (chance < percent) {
+      _notifier.setRandomClick((percent / 2).round());
+      sendEventToNative();
+    } else {
+      context.popScreen(result: true);
+    }
   }
 }

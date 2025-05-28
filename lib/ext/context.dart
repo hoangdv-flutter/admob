@@ -7,6 +7,7 @@ import 'package:admob/shared/ads_shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_core/core.dart';
 import 'package:flutter_core/data/response.dart';
+import 'package:flutter_core/data/shared/premium_holder.dart';
 
 extension ContextExt on BuildContext {
   Future<dynamic> pushScreenWithAds<T>(Route<T> route, {
@@ -16,6 +17,7 @@ extension ContextExt on BuildContext {
     AdLoaderListener? adLoaderListener,
   }) async {
     final adShared = appInject<AdShared>();
+    final premiumHolder = appInject<PremiumHolder>();
     final interWhenBack = adShared.useInterOnBack;
     final navigator = Navigator.of(this, rootNavigator: true);
 
@@ -34,6 +36,18 @@ extension ContextExt on BuildContext {
     }
 
     if (ignoreAds) {
+      final result = await pushAction();
+      adLoaderListener?.onInterPassed?.call();
+      return result;
+    }
+
+    if (premiumHolder.isPremium) {
+      final result = await pushAction();
+      adLoaderListener?.onInterPassed?.call();
+      return result;
+    }
+
+    if (!adShared.canShowInterstitial) {
       final result = await pushAction();
       adLoaderListener?.onInterPassed?.call();
       return result;
@@ -91,21 +105,48 @@ extension ContextExt on BuildContext {
     AdLoaderListener? adLoaderListener}) async {
     try {
       final adShared = appInject<AdShared>();
+      final premiumHolder = appInject<PremiumHolder>();
       final configs = adShared.interNativeConfig[adsID];
       if (Navigator.canPop(this)) {
         CrashlyticsLogger.logError(
             "pop screen ${widget.runtimeType.toString()}");
         final shared = appInject<AdShared>();
         if (ignoreAds || !shared.useInterOnBack) {
-          Navigator.of(this, rootNavigator: true).pop(result);
+          final navigator = Navigator.maybeOf(this, rootNavigator: true);
+          if (navigator?.canPop() ?? false) {
+            navigator!.pop(result);
+          }
           adLoaderListener?.onInterPassed?.call();
           return;
         }
         if ((configs?.showable == false || configs == null) &&
             adShared.adsPlanConfig == 2) {
-          Navigator.of(this, rootNavigator: true).pop(result);
+          final navigator = Navigator.maybeOf(this, rootNavigator: true);
+          if (navigator?.canPop() ?? false) {
+            navigator!.pop(result);
+          }
+
           adLoaderListener?.onInterPassed?.call();
           return;
+        }
+
+        if (premiumHolder.isPremium) {
+          final navigator = Navigator.maybeOf(this, rootNavigator: true);
+          if (navigator?.canPop() ?? false) {
+            navigator!.pop(result);
+          }
+
+          adLoaderListener?.onInterPassed?.call();
+          return ;
+        }
+
+        if (!adShared.canShowInterstitial) {
+          final navigator = Navigator.maybeOf(this, rootNavigator: true);
+          if (navigator?.canPop() ?? false) {
+            navigator!.pop(result);
+          }
+          adLoaderListener?.onInterPassed?.call();
+          return ;
         }
         if (configs?.nativeFullScreen == false || adShared.adsPlanConfig == 1) {
           (appInject<InterstitialLoader>()).show(
@@ -115,7 +156,10 @@ extension ContextExt on BuildContext {
                 adLoaderListener?.onAdFailedToLoad?.call();
               },
                   onInterPassed: () {
-                    Navigator.of(this, rootNavigator: true).pop(result);
+                    final navigator = Navigator.maybeOf(this, rootNavigator: true);
+                    if (navigator?.canPop() ?? false) {
+                      navigator!.pop(result);
+                    }
                     adLoaderListener?.onInterPassed?.call();
                   },
                   onAdConsume: () {
@@ -133,7 +177,10 @@ extension ContextExt on BuildContext {
         } else {
           final r = await pushScreen(FullScreenNativeScreen.newRoute());
           if (r != null) {
-            Navigator.of(this, rootNavigator: true).pop(result);
+            final navigator = Navigator.maybeOf(this, rootNavigator: true);
+            if (navigator?.canPop() ?? false) {
+              navigator!.pop(result);
+            }
           }
         }
       }
