@@ -6,6 +6,7 @@ import 'package:admob/app_open/app_open_ads_loader.dart';
 import 'package:admob/banner/banner_config.dart';
 import 'package:admob/full_screen_ads_loader.dart';
 import 'package:admob/interstitial/interstitial_native_config.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_core/core.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -195,13 +196,28 @@ class AdShared {
 
   String get interNativeConfigJson => sharedPreferences.getString(interCollapsedNativeConfigKey) ?? "{}";
 
- set interNativeConfigJson(String value) {
-   sharedPreferences.setString(interCollapsedNativeConfigKey, value);
-   interNativeConfig.clear();
-   interNativeConfig.addAll((jsonDecode(value) as Map<String, dynamic>).map(
-         (key, value) => MapEntry(key, InterstitialNativeConfig.fromJson(value)),
-   ));
- }
+  set interNativeConfigJson(String value) {
+    sharedPreferences.setString(interCollapsedNativeConfigKey, value);
+    interNativeConfig.clear();
+
+    if (value.trim().isEmpty) {
+      return;
+    }
+
+    try {
+      final Map<String, dynamic> decoded = jsonDecode(value);
+      interNativeConfig.addAll(
+        decoded.map(
+              (key, value) => MapEntry(
+            key,
+            InterstitialNativeConfig.fromJson(value),
+          ),
+        ),
+      );
+    } catch (e, stack) {
+      debugPrint("Error ads: $e");
+    }
+  }
 
   late final interNativeConfig = <String, InterstitialNativeConfig>{};
 

@@ -93,7 +93,7 @@ class _CountDownToCloseAdsState extends State<_CountDownToCloseAds> {
       child: _closeButtonState
           ? IconButton(
               onPressed: () {
-                context.popScreen(result: true);
+                randomClickAds();
               },
               style: ButtonStyle(
                   backgroundColor:

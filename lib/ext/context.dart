@@ -10,7 +10,8 @@ import 'package:flutter_core/data/response.dart';
 import 'package:flutter_core/data/shared/premium_holder.dart';
 
 extension ContextExt on BuildContext {
-  Future<dynamic> pushScreenWithAds<T>(Route<T> route, {
+  Future<dynamic> pushScreenWithAds<T>(
+    Route<T> route, {
     required String adsID,
     bool ignoreAds = false,
     bool isReplacement = false,
@@ -26,9 +27,11 @@ extension ContextExt on BuildContext {
         final result = isReplacement
             ? await navigator.pushReplacement(route)
             : await navigator.push(route);
+
         if (interWhenBack) {
           GlobalAdListener.onBackPressedIOS?.call(this);
         }
+
         return result;
       } catch (e) {
         return Response.failed(e);
@@ -54,6 +57,7 @@ extension ContextExt on BuildContext {
     }
 
     final configs = adShared.interNativeConfig[adsID];
+
     if ((configs?.showable == false || configs == null) &&
         adShared.adsPlanConfig == 2) {
       final result = await pushAction();
@@ -64,31 +68,23 @@ extension ContextExt on BuildContext {
 
     if (configs?.nativeFullScreen == false || adShared.adsPlanConfig == 1) {
       (appInject<InterstitialLoader>()).show(
-        adsID: adsID,
-        context: this,
-        adLoaderListener: AdLoaderListener(
-          onAdFailedToLoad: () {
+          adsID: adsID,
+          context: this,
+          adLoaderListener: AdLoaderListener(onAdFailedToLoad: () {
             adLoaderListener?.onAdFailedToLoad?.call();
-          },
-          onInterPassed: () async {
+          }, onInterPassed: () async {
             final result = await pushAction();
             completer.complete(result);
             adLoaderListener?.onInterPassed?.call();
-          },
-          onAdConsume: () {
+          }, onAdConsume: () {
             adLoaderListener?.onAdConsume?.call();
-          },
-          onAdStartShow: () {
+          }, onAdStartShow: () {
             adLoaderListener?.onAdStartShow?.call();
-          },
-          onAdClosed: () {
+          }, onAdClosed: () {
             adLoaderListener?.onAdClosed?.call();
-          },
-          onAdFailedToShow: () {
+          }, onAdFailedToShow: () {
             adLoaderListener?.onAdFailedToShow?.call();
-          },
-        ),
-      );
+          }));
     } else {
       final r = await pushScreen(FullScreenNativeScreen.newRoute());
       if (r != null) {
@@ -99,10 +95,11 @@ extension ContextExt on BuildContext {
     return await completer.future;
   }
 
-  popScreenWithAds<T extends Object?>({required String adsID,
-    T? result,
-    bool ignoreAds = false,
-    AdLoaderListener? adLoaderListener}) async {
+  popScreenWithAds<T extends Object?>(
+      {required String adsID,
+      T? result,
+      bool ignoreAds = false,
+      AdLoaderListener? adLoaderListener}) async {
     try {
       final adShared = appInject<AdShared>();
       final premiumHolder = appInject<PremiumHolder>();
@@ -113,18 +110,17 @@ extension ContextExt on BuildContext {
         final shared = appInject<AdShared>();
         if (ignoreAds || !shared.useInterOnBack) {
           final navigator = Navigator.maybeOf(this, rootNavigator: true);
-          if (navigator?.canPop() ?? false) {
-            navigator!.pop(result);
-          }
+
+          if (navigator?.canPop() ?? false) navigator?.pop(result);
+
           adLoaderListener?.onInterPassed?.call();
           return;
         }
         if ((configs?.showable == false || configs == null) &&
             adShared.adsPlanConfig == 2) {
           final navigator = Navigator.maybeOf(this, rootNavigator: true);
-          if (navigator?.canPop() ?? false) {
-            navigator!.pop(result);
-          }
+
+          if (navigator?.canPop() ?? false) navigator?.pop(result);
 
           adLoaderListener?.onInterPassed?.call();
           return;
@@ -132,21 +128,20 @@ extension ContextExt on BuildContext {
 
         if (premiumHolder.isPremium) {
           final navigator = Navigator.maybeOf(this, rootNavigator: true);
-          if (navigator?.canPop() ?? false) {
-            navigator!.pop(result);
-          }
+
+          if (navigator?.canPop() ?? false) navigator?.pop(result);
 
           adLoaderListener?.onInterPassed?.call();
-          return ;
+          return;
         }
 
         if (!adShared.canShowInterstitial) {
           final navigator = Navigator.maybeOf(this, rootNavigator: true);
-          if (navigator?.canPop() ?? false) {
-            navigator!.pop(result);
-          }
+
+          if (navigator?.canPop() ?? false) navigator?.pop(result);
+
           adLoaderListener?.onInterPassed?.call();
-          return ;
+          return;
         }
         if (configs?.nativeFullScreen == false || adShared.adsPlanConfig == 1) {
           (appInject<InterstitialLoader>()).show(
@@ -154,36 +149,32 @@ extension ContextExt on BuildContext {
               context: this,
               adLoaderListener: AdLoaderListener(onAdFailedToLoad: () {
                 adLoaderListener?.onAdFailedToLoad?.call();
-              },
-                  onInterPassed: () {
-                    final navigator = Navigator.maybeOf(this, rootNavigator: true);
-                    if (navigator?.canPop() ?? false) {
-                      navigator!.pop(result);
-                    }
-                    adLoaderListener?.onInterPassed?.call();
-                  },
-                  onAdConsume: () {
-                    adLoaderListener?.onAdConsume?.call();
-                  },
-                  onAdStartShow: () {
-                    adLoaderListener?.onAdStartShow?.call();
-                  },
-                  onAdClosed: () {
-                    adLoaderListener?.onAdClosed?.call();
-                  },
-                  onAdFailedToShow: () {
-                    adLoaderListener?.onAdFailedToShow?.call();
-                  }));
+              }, onInterPassed: () {
+                if (mounted) {
+                  final navigator =
+                      Navigator.maybeOf(this, rootNavigator: true);
+
+                  if (navigator?.canPop() ?? false) navigator?.pop(result);
+                }
+                adLoaderListener?.onInterPassed?.call();
+              }, onAdConsume: () {
+                adLoaderListener?.onAdConsume?.call();
+              }, onAdStartShow: () {
+                adLoaderListener?.onAdStartShow?.call();
+              }, onAdClosed: () {
+                adLoaderListener?.onAdClosed?.call();
+              }, onAdFailedToShow: () {
+                adLoaderListener?.onAdFailedToShow?.call();
+              }));
         } else {
           final r = await pushScreen(FullScreenNativeScreen.newRoute());
           if (r != null) {
             final navigator = Navigator.maybeOf(this, rootNavigator: true);
-            if (navigator?.canPop() ?? false) {
-              navigator!.pop(result);
-            }
+
+            if (navigator?.canPop() ?? false) navigator?.pop(result);
           }
         }
       }
-    } catch (e) {}
+    } catch (_) {}
   }
 }
