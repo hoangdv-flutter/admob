@@ -53,8 +53,7 @@ class FirebaseRemoteDataSource extends RemoteDataSource {
     });
     final r = await process(() => _remote.fetchAndActivate());
     if (r.value != true) {
-      shared.interNativeConfigJson =
-          _remote.getString(AdShared.interCollapsedNativeConfigKey);
+      shared.interNativeConfigJson = shared.interNativeConfigJson;
       return;
     }
     shared.isMonetization = _remote.getBool(_isMonetization);

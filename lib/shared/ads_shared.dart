@@ -197,15 +197,16 @@ class AdShared {
   String get interNativeConfigJson => sharedPreferences.getString(interCollapsedNativeConfigKey) ?? "{}";
 
   set interNativeConfigJson(String value) {
-    sharedPreferences.setString(interCollapsedNativeConfigKey, value);
-    interNativeConfig.clear();
-
     if (value.trim().isEmpty) {
       return;
     }
 
     try {
       final Map<String, dynamic> decoded = jsonDecode(value);
+
+      sharedPreferences.setString(interCollapsedNativeConfigKey, value);
+      interNativeConfig.clear();
+
       interNativeConfig.addAll(
         decoded.map(
               (key, value) => MapEntry(
