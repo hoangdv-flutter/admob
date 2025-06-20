@@ -64,6 +64,7 @@ extension ContextExt on BuildContext {
       adLoaderListener?.onInterPassed?.call();
       return result;
     }
+
     final completer = Completer<dynamic>();
 
     if (configs?.nativeFullScreen == false || adShared.adsPlanConfig == 1) {
@@ -87,11 +88,13 @@ extension ContextExt on BuildContext {
           }));
     } else {
       final r = await pushScreen(FullScreenNativeScreen.newRoute());
+
       if (r != null) {
         final result = await pushAction();
         completer.complete(result);
       }
     }
+
     return await completer.future;
   }
 
@@ -101,48 +104,65 @@ extension ContextExt on BuildContext {
       bool ignoreAds = false,
       AdLoaderListener? adLoaderListener}) async {
     try {
+      bool hasPopped = false;
       final adShared = appInject<AdShared>();
       final premiumHolder = appInject<PremiumHolder>();
       final configs = adShared.interNativeConfig[adsID];
+
+      void safePop() {
+        if (hasPopped || !mounted) return;
+
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          if (mounted) {
+            final navigator = Navigator.maybeOf(this, rootNavigator: true);
+
+            if (navigator != null && navigator.canPop()) {
+              hasPopped = true;
+              navigator.pop(result);
+            }
+          }
+        });
+      }
+
       if (Navigator.canPop(this)) {
         CrashlyticsLogger.logError(
             "pop screen ${widget.runtimeType.toString()}");
-        final shared = appInject<AdShared>();
-        if (ignoreAds || !shared.useInterOnBack) {
-          final navigator = Navigator.maybeOf(this, rootNavigator: true);
 
-          if (navigator?.canPop() ?? false) navigator?.pop(result);
+        final shared = appInject<AdShared>();
+
+        if (ignoreAds || !shared.useInterOnBack) {
+          safePop();
 
           adLoaderListener?.onInterPassed?.call();
+
           return;
         }
+
         if ((configs?.showable == false || configs == null) &&
             adShared.adsPlanConfig == 2) {
-          final navigator = Navigator.maybeOf(this, rootNavigator: true);
-
-          if (navigator?.canPop() ?? false) navigator?.pop(result);
+          safePop();
 
           adLoaderListener?.onInterPassed?.call();
+
           return;
         }
 
         if (premiumHolder.isPremium) {
-          final navigator = Navigator.maybeOf(this, rootNavigator: true);
-
-          if (navigator?.canPop() ?? false) navigator?.pop(result);
+          safePop();
 
           adLoaderListener?.onInterPassed?.call();
+
           return;
         }
 
         if (!adShared.canShowInterstitial) {
-          final navigator = Navigator.maybeOf(this, rootNavigator: true);
-
-          if (navigator?.canPop() ?? false) navigator?.pop(result);
+          safePop();
 
           adLoaderListener?.onInterPassed?.call();
+
           return;
         }
+
         if (configs?.nativeFullScreen == false || adShared.adsPlanConfig == 1) {
           (appInject<InterstitialLoader>()).show(
               adsID: adsID,
@@ -150,12 +170,8 @@ extension ContextExt on BuildContext {
               adLoaderListener: AdLoaderListener(onAdFailedToLoad: () {
                 adLoaderListener?.onAdFailedToLoad?.call();
               }, onInterPassed: () {
-                if (mounted) {
-                  final navigator =
-                      Navigator.maybeOf(this, rootNavigator: true);
+                safePop();
 
-                  if (navigator?.canPop() ?? false) navigator?.pop(result);
-                }
                 adLoaderListener?.onInterPassed?.call();
               }, onAdConsume: () {
                 adLoaderListener?.onAdConsume?.call();
@@ -168,11 +184,8 @@ extension ContextExt on BuildContext {
               }));
         } else {
           final r = await pushScreen(FullScreenNativeScreen.newRoute());
-          if (r != null) {
-            final navigator = Navigator.maybeOf(this, rootNavigator: true);
 
-            if (navigator?.canPop() ?? false) navigator?.pop(result);
-          }
+          if (r != null) safePop();
         }
       }
     } catch (_) {}
