@@ -11,7 +11,7 @@ extension ListExt<T> on List<T> {
     }
     startIndex += repeatInterval;
     var adsCount = 0;
-    while (++adsCount < maxAds && startIndex < length) {
+    while (++adsCount < maxAds /*&& startIndex < length*/) {
       insert(startIndex, itemBuilder());
       startIndex += repeatInterval;
     }

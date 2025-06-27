@@ -1,3 +1,4 @@
+// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
@@ -16,12 +17,14 @@ import 'package:admob/ads_loader.dart' as _i632;
 import 'package:admob/app_lifecycle_reactor.dart' as _i1027;
 import 'package:admob/app_open/app_open_ads_loader.dart' as _i273;
 import 'package:admob/banner/banner_ads_loader.dart' as _i661;
+import 'package:admob/data/firebase_analytics_service.dart' as _i757;
 import 'package:admob/data/firebase_remote_datasource.dart' as _i987;
 import 'package:admob/interstitial/interstitial_ad.dart' as _i318;
 import 'package:admob/native/full_screen/full_screen_native_loader.dart'
     as _i629;
 import 'package:admob/native/native_ads_factory.dart' as _i212;
 import 'package:admob/native/native_ads_loader.dart' as _i598;
+import 'package:admob/native/native_ads_presenter_high.dart' as _i793;
 import 'package:admob/shared/ads_shared.dart' as _i484;
 import 'package:flutter_core/data/shared/premium_holder.dart' as _i932;
 import 'package:get_it/get_it.dart' as _i174;
@@ -40,12 +43,18 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     gh.factory<_i212.NativeAdsLoaded>(() => _i212.NativeAdsLoaded());
+    gh.singleton<_i757.FirebaseAnalyticsService>(
+        () => _i757.FirebaseAnalyticsService());
     gh.factory<_i837.AdId>(
       () => _i394.AdHelperDebug(),
       instanceName: 'adIdDebug',
     );
     gh.singleton<_i484.AdShared>(
         () => _i484.AdShared(gh<_i460.SharedPreferences>()));
+    gh.singleton<_i793.NativeAdsLoaderHigh>(() => _i793.NativeAdsLoaderHigh(
+          gh<_i932.PremiumHolder>(),
+          gh<_i484.AdShared>(),
+        ));
     gh.factory<_i837.AdId>(
       () => _i508.AdHelper(
         gh<_i837.AdId>(instanceName: 'adIdDebug'),
@@ -72,6 +81,14 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i837.AdId>(instanceName: 'globalAdId'),
           gh<_i484.AdShared>(),
         ));
+    gh.singleton<_i273.AppOpenAdsLoader>(
+      () => _i273.AppOpenAdsLoader(
+        gh<_i932.PremiumHolder>(),
+        gh<_i837.AdId>(instanceName: 'globalAdId'),
+        gh<_i484.AdShared>(),
+      ),
+      dispose: (i) => i.dispose(),
+    );
     gh.lazySingleton<_i318.InterstitialLoader>(
       () => _i318.InterstitialLoader(
         gh<_i484.AdShared>(),
@@ -83,19 +100,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i987.FirebaseRemoteDataSource>(
         () => _i987.FirebaseRemoteDataSource(gh<_i484.AdShared>()));
-    gh.lazySingleton<_i598.NativeAdsLoader>(
-      () => _i598.NativeAdsLoader(
-        gh<_i837.AdId>(instanceName: 'globalAdId'),
+    gh.singleton<_i318.InterstitialLoaderHigh>(
+      () => _i318.InterstitialLoaderHighImpl(
+        gh<_i484.AdShared>(),
         gh<_i932.PremiumHolder>(),
-      ),
-      dispose: (i) => i.dispose(),
-    );
-    gh.factory<_i629.FullscreenNativeNotifier>(
-        () => _i629.FullscreenNativeNotifier(gh<_i484.AdShared>()));
-    gh.singleton<_i273.AppOpenAdsLoader>(
-      () => _i273.AppOpenAdsLoader(
-        gh<_i932.PremiumHolder>(),
-        gh<_i837.AdId>(instanceName: 'globalAdId'),
       ),
       dispose: (i) => i.dispose(),
     );
@@ -106,6 +114,15 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       dispose: (i) => i.dispose(),
     );
+    gh.lazySingleton<_i598.NativeAdsLoader>(
+      () => _i598.NativeAdsLoader(
+        gh<_i837.AdId>(instanceName: 'globalAdId'),
+        gh<_i932.PremiumHolder>(),
+      ),
+      dispose: (i) => i.dispose(),
+    );
+    gh.factory<_i629.FullscreenNativeNotifier>(
+        () => _i629.FullscreenNativeNotifier(gh<_i484.AdShared>()));
     gh.singleton<_i1027.AppLifecycleReactor>(
       () => _i1027.AppLifecycleReactor(gh<_i273.AppOpenAdsLoader>()),
       dispose: (i) => i.dispose(),

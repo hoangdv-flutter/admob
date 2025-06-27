@@ -14,11 +14,14 @@ class BannerWidget extends StatefulWidget {
   final String bannerId;
   final CollapsibleDirection? collapsibleDirection;
   final bool isLarge;
+  final String? adId;
 
   const BannerWidget(
       {super.key,
       this.collapsibleDirection,
-      required this.bannerId, this.isLarge = false});
+      required this.bannerId,
+      this.isLarge = false,
+      this.adId});
 
   @override
   State<BannerWidget> createState() => _BannerWidgetState();
@@ -35,6 +38,8 @@ class _BannerWidgetState extends BaseState<BannerWidget>
   StreamSubscription? _showableSubs;
 
   StreamSubscription? _reloadBannerSub;
+
+  StreamSubscription? _adsLoaderSub;
 
   late final _nativeNotifier = context.read<NativeAdsNotifier?>();
 
@@ -55,6 +60,11 @@ class _BannerWidgetState extends BaseState<BannerWidget>
     _reloadBannerSub = _bannerAdLoader.reloadBanner.listen((value) {
       if (value == true) {
         reloadBanner = true;
+      }
+    });
+    _adsLoaderSub = _bannerAdLoader.adsLoaderStream.listen((value) {
+      if (value == true) {
+        setState(() {});
       }
     });
     WidgetsBinding.instance.addObserver(this);
@@ -129,6 +139,7 @@ class _BannerWidgetState extends BaseState<BannerWidget>
     _premiumCubit.close();
     _showableSubs?.cancel();
     _reloadBannerSub?.cancel();
+    _adsLoaderSub?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

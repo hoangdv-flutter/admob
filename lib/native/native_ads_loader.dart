@@ -1,4 +1,5 @@
 import 'package:admob/ad_id/ad_id.dart';
+import 'package:admob/admob.dart';
 import 'package:admob/ads_loader.dart';
 import 'package:admob/listener/global_listener.dart';
 import 'package:admob/native/native_ads_factory.dart';
@@ -9,6 +10,8 @@ import 'package:flutter_core/data/shared/premium_holder.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:injectable/injectable.dart';
 import 'package:synchronized/synchronized.dart';
+
+import 'native_ads_presenter_high.dart';
 
 @lazySingleton
 class NativeAdsLoader {
@@ -22,12 +25,15 @@ class NativeAdsLoader {
 
   final lock = Lock(reentrant: true);
 
+  var currentIndex = 0;
+
   NativeAdsLoader(@Named(AdId.namedAdId) this.adId, this.premiumHolder);
 
   Future<void> fetchAds(
-      String factoryID,
-      ObjectReference<NativeLoaderListener> nativeLoaderListener,
-      bool fullScreen) async {
+    String factoryID,
+    ObjectReference<NativeLoaderListener> nativeLoaderListener,
+    NativeHighEnum nativeEnum,
+  ) async {
     if (!appInject<AdsLoader>().isInitial) return;
     await lock.synchronized(() {
       if (premiumHolder.isPremium) {
@@ -41,39 +47,66 @@ class NativeAdsLoader {
         availableAds.removeFirst();
         return;
       }
-      _loadAds(factoryID, nativeLoaderListener, fullScreen);
+      _loadAds(factoryID, nativeLoaderListener, nativeEnum);
     });
   }
 
   Future<void> _loadAds(
-      String factoryID,
-      ObjectReference<NativeLoaderListener> nativeLoaderListener,
-      bool fullScreen) async {
+    String factoryID,
+    ObjectReference<NativeLoaderListener> nativeLoaderListener,
+    NativeHighEnum nativeEnum,
+  ) async {
     await lock.synchronized(() async {
       if (listeners.contains(nativeLoaderListener)) return;
       nativeLoaderListener.value?.onAdLoading?.call();
       listeners.add(nativeLoaderListener);
-      NativeAd(
-              adUnitId: fullScreen ? adId.fullScreenNativeId : adId.nativeAdUnitID,
-              factoryId: factoryID,
-              listener: NativeAdListener(
-                  onAdFailedToLoad: (ad, error) {
-                    _onAdFailedToLoad(ad, error, nativeLoaderListener);
-                  },
-                  onAdLoaded: (ad) {
-                    _onAdLoaded(
-                        factoryID, ad as NativeAd, nativeLoaderListener);
-                  },
-                  onAdClicked: (ad) {
-                    _onAdClicked(nativeLoaderListener);
-                  },
-                  onPaidEvent: GlobalAdListener.onPaidEventCallback),
-              nativeAdOptions: NativeAdOptions(
-                  videoOptions: VideoOptions(
-                      startMuted: true, customControlsRequested: false)),
-              request: const AdRequest())
-          .load();
+      _loadWaterFall(
+          factoryID, nativeEnum.listID[currentIndex], nativeLoaderListener, () {
+        currentIndex += 1;
+        if (currentIndex == nativeEnum.listID.length) {
+          nativeLoaderListener.value?.onAdFailedToLoad?.call(LoadAdError(
+              1,
+              "domain",
+              "premium user!",
+              const ResponseInfo(responseExtras: {})));
+          currentIndex = 0;
+          return;
+        }
+        _loadAds(factoryID, nativeLoaderListener, nativeEnum);
+      });
     });
+  }
+
+  Future<void> _loadWaterFall(
+      String factoryID,
+      String adID,
+      ObjectReference<NativeLoaderListener> nativeLoaderListener,
+      Function() callBack) async {
+    NativeAd(
+            adUnitId: adID,
+            factoryId: factoryID,
+            listener: NativeAdListener(
+                onAdFailedToLoad: (ad, error) async{
+                  // _onAdFailedToLoad(ad, error, nativeLoaderListener);
+                  await lock.synchronized(() {
+                    listeners.remove(nativeLoaderListener);
+                    ad.dispose();
+                  });
+                  callBack.call();
+                },
+                onAdLoaded: (ad) {
+                  currentIndex = 0;
+                  _onAdLoaded(factoryID, ad as NativeAd, nativeLoaderListener);
+                },
+                onAdClicked: (ad) {
+                  // _onAdClicked(nativeLoaderListener);
+                },
+                onPaidEvent: GlobalAdListener.onPaidEventCallback),
+            nativeAdOptions: NativeAdOptions(
+                videoOptions: VideoOptions(
+                    startMuted: true, customControlsRequested: false)),
+            request: const AdRequest())
+        .load();
   }
 
   Future<void> _onAdLoaded(String factoryID, NativeAd nativeAd,

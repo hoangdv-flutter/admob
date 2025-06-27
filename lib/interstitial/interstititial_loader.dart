@@ -16,7 +16,7 @@ class InterstitialLoader extends FullScreenAdsLoader<InterstitialAd> {
   late final flow = WaterFlow(waterFlowIds: [
     adID.interHighAdUnitId,
     adID.interMediumAdUnitId,
-    adID.interAllPriceAdUnitId
+    // adID.interAllPriceAdUnitId
   ], adShared: _adShared, normalIds: adID.normalInterAdUnitId);
 
   @override

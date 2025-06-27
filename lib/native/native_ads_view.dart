@@ -9,9 +9,12 @@ import 'package:flutter_core/theme/app_theme.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shimmer/shimmer.dart';
 
+import 'native_ads_presenter_high.dart';
+
 abstract class NativeAdWidget extends StatefulWidget {
   final String nativeAdId;
   final bool? fullScreen;
+  final NativeHighEnum nativeHighEnum;
 
   final Function()? onNativeError;
 
@@ -25,7 +28,7 @@ abstract class NativeAdWidget extends StatefulWidget {
       required this.adSize,
       this.onNativeError,
       this.onNextScreen,
-      required this.fullScreen})
+      required this.fullScreen, required this.nativeHighEnum})
       : super(key: key);
 
   final BoxDecoration? decoration;
@@ -78,7 +81,7 @@ abstract class NativeAdWidgetState extends State<NativeAdWidget> {
     debugPrint("start load Native ad ${widget.nativeAdId}");
     nativeStateSubs = context
         .read<NativeAdsNotifier>()
-        .loadAds(widget.nativeAdId, nativeAdFactory, widget.fullScreen ?? false)
+        .loadAds(widget.nativeAdId, nativeAdFactory, widget.nativeHighEnum)
         ?.nativeLoaderState
         .listen((event) {
       setState(() {

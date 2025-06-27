@@ -14,7 +14,9 @@ class AppOpenAdsLoader {
 
   final AdId adId;
 
-  AppOpenAdsLoader(this._premiumHolder, @Named(AdId.namedAdId) this.adId);
+  final AdShared _adShared;
+
+  AppOpenAdsLoader(this._premiumHolder, @Named(AdId.namedAdId) this.adId, this._adShared);
 
   AppOpenAd? _availableAd;
 
@@ -29,7 +31,7 @@ class AppOpenAdsLoader {
   bool get availableAd => _availableAd != null;
 
   Future<void> show({Function()? onShowed}) async {
-    if (_premiumHolder.isPremium) return;
+    if (_premiumHolder.isPremium || !_adShared.canShowOpenAppAds) return;
     if (_availableAd == null) {
       loadAd();
       return;

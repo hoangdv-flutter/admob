@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 
 import 'package:admob/ad_id/ad_id.dart';
 import 'package:admob/ad_loader_listener.dart';
@@ -15,5 +16,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:injectable/injectable.dart';
 
 part 'interstititial_loader.dart';
+part 'interstitial_loader_high.dart';
+part 'interstitial_loader_high_impl.dart';
 part 'reward_interstitial_loader.dart';
 part 'reward_loader.dart';

@@ -27,8 +27,7 @@ abstract class NormalNativeAdState extends NativeAdWidgetState {
           nativeStateSubs?.cancel();
           nativeStateSubs = context
               .read<NativeAdsNotifier>()
-              .loadAds(widget.nativeAdId, nativeAdFactory,
-                  widget.fullScreen ?? false)
+              .loadAds(widget.nativeAdId, nativeAdFactory,widget.nativeHighEnum)
               ?.nativeLoaderState
               .listen((event) {
             setState(() {

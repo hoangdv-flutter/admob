@@ -8,6 +8,8 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:synchronized/extension.dart';
 
+import '../native/native_ads_presenter_high.dart';
+
 part 'collapsed_native_state.dart';
 
 class NativeAdsNotifier extends BaseChangeNotifier {
@@ -40,7 +42,7 @@ class NativeAdsNotifier extends BaseChangeNotifier {
     }
   }
 
-  NativeAdRequester? loadAds(String requestId, String factoryId, bool fullScreen) {
+  NativeAdRequester? loadAds(String requestId, String factoryId, NativeHighEnum nativeEnum) {
     if (nativeConfig[requestId] == false) {
       return null;
     }
@@ -52,7 +54,7 @@ class NativeAdsNotifier extends BaseChangeNotifier {
       debugPrint("native ad old State ${requester.state}");
       return requester;
     }
-    nativeAdLoader.fetchAds(factoryId, requester.listener, fullScreen);
+    nativeAdLoader.fetchAds(factoryId, requester.listener, nativeEnum);
     return requester;
   }
 
@@ -109,7 +111,8 @@ class NativeAdRequester {
       _nativeLoaderStateStreamController.stream;
 
   void close() {
-    _nativeLoaderStateStreamController.value.nativeAd?.dispose();
+    final state = _nativeLoaderStateStreamController.valueOrNull;
+    state?.nativeAd?.dispose();
     _nativeLoaderStateStreamController.close();
     listener.clearReferences();
   }

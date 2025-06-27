@@ -6,6 +6,8 @@ class NativeAdsFactory {
   static const smallNativeBanner = "smallNativeAdView";
   static const mediumNativeBanner = "mediumNativeAdView";
   static const fullScreenNativeAd = "fullScreenNativeAd";
+  static const fullScreenNativeAdHigh = "fullScreenNativeAdHigh";
+  static const nativeTemplateHigh = "native_temple_high";
 }
 
 @injectable

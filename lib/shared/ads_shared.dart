@@ -62,7 +62,13 @@ class AdShared {
 
   static final _percentClickNativeAds = "_percentClickNativeAds";
 
+  static final _canShowOpenAppAds = "_canShowOpenAppAds";
+
   AdShared(this.sharedPreferences);
+
+  bool get canShowOpenAppAds => sharedPreferences.getBool(_canShowOpenAppAds) ?? false;
+
+  set canShowOpenAppAds(bool value) => sharedPreferences.setBool(_canShowOpenAppAds, value);
 
   int get lastTimeShowInterAds =>
       sharedPreferences.getInt(_lastTimeShowInterAds) ?? 0;
