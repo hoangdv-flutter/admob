@@ -150,7 +150,8 @@ class _BannerWidgetState extends BaseState<BannerWidget>
             ? {"collapsible": "${widget.collapsibleDirection?.name}"}
             : null,
         id: widget.bannerId,
-        isLarge: widget.isLarge);
+        isLarge: widget.isLarge,
+        adID: widget.adId);
   }
 
   Widget _buildAds(BuildContext context) {

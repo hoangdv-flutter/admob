@@ -58,6 +58,7 @@ class BannerAdsLoader extends Executable {
             adUnitId: adID ?? adId.bannerAdUnitId,
             listener: BannerAdListener(
               onAdLoaded: (ad) {
+                print("load banner id $adID");
                 _loadable = true;
                 _bannerAd = ad as BannerAd?;
                 _bannerAdStreamController.addSafety(_bannerAd);

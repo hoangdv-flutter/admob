@@ -33,25 +33,45 @@ extension NativeIDHighExtension on NativeHighEnum {
                 "ca-app-pub-5390451356176712/6759614307",
               ];
       case NativeHighEnum.langSecond:
-        return [
-          "ca-app-pub-5390451356176712/1048956778",
-          "ca-app-pub-5390451356176712/7628459952"
-        ];
+        return kDebugMode
+            ? [
+                "ca-app-pub-3940256099942544/2247696111",
+                "ca-app-pub-3940256099942544/2247696110"
+              ]
+            : [
+                "ca-app-pub-5390451356176712/1048956778",
+                "ca-app-pub-5390451356176712/7628459952"
+              ];
       case NativeHighEnum.onboardFirst:
-        return [
-          "ca-app-pub-5390451356176712/3190274079",
-          "ca-app-pub-5390451356176712/2376133276"
-        ];
+        return kDebugMode
+            ? [
+                "ca-app-pub-3940256099942544/2247696111",
+                "ca-app-pub-3940256099942544/2247696110"
+              ]
+            : [
+                "ca-app-pub-5390451356176712/3190274079",
+                "ca-app-pub-5390451356176712/2376133276"
+              ];
       case NativeHighEnum.onboardFullFirst:
-        return [
-          "ca-app-pub-5390451356176712/6577202353",
-          "ca-app-pub-5390451356176712/2820369290"
-        ];
+        return kDebugMode
+            ? [
+                "ca-app-pub-3940256099942544/2247696111",
+                "ca-app-pub-3940256099942544/2247696110"
+              ]
+            : [
+                "ca-app-pub-5390451356176712/6577202353",
+                "ca-app-pub-5390451356176712/2820369290"
+              ];
       case NativeHighEnum.onboardFullSecond:
-        return [
-          "ca-app-pub-5390451356176712/3951039014",
-          "ca-app-pub-5390451356176712/8749969930"
-        ];
+        return kDebugMode
+            ? [
+                "ca-app-pub-3940256099942544/2247696111",
+                "ca-app-pub-3940256099942544/2247696110"
+              ]
+            : [
+                "ca-app-pub-5390451356176712/3951039014",
+                "ca-app-pub-5390451356176712/8749969930"
+              ];
     }
   }
 
@@ -105,7 +125,9 @@ class NativeAdsLoaderHigh {
       return;
     }
     if (premiumHolder.isPremium ||
-        _adShared.nativeScreenConfig[type.nativeID] == false) return;
+        _adShared.nativeScreenConfig[type.nativeID] == false) {
+      return;
+    }
 
     final currentState = _state[type];
     if (currentState == NativeAdLoadState.loading ||
@@ -166,8 +188,14 @@ class NativeAdsLoaderHigh {
     return _state[type] == NativeAdLoadState.loaded;
   }
 
+  removeNative(NativeHighEnum type) {
+    _nativeAds[type]?.dispose();
+    _nativeAds.remove(type);
+  }
+
   NativeAd? getAd(NativeHighEnum type) {
-    return _nativeAds[type];
+    final native = _nativeAds[type];
+    return native;
   }
 
   void disposeAll() {
