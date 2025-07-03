@@ -11,6 +11,21 @@ extension ListExt<T> on List<T> {
     }
     startIndex += repeatInterval;
     var adsCount = 0;
+    while (++adsCount < maxAds && startIndex < length) {
+      insert(startIndex, itemBuilder());
+      startIndex += repeatInterval;
+    }
+  }
+
+  void insertAdFull(T Function() itemBuilder, int startIndex, int repeatInterval,
+      int maxAds) {
+    final premiumHolder = appInject<PremiumHolder>();
+    if (premiumHolder.isPremium) return;
+    if (length >= startIndex) {
+      insert(startIndex, itemBuilder());
+    }
+    startIndex += repeatInterval;
+    var adsCount = 0;
     while (++adsCount < maxAds /*&& startIndex < length*/) {
       insert(startIndex, itemBuilder());
       startIndex += repeatInterval;
