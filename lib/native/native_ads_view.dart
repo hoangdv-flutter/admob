@@ -9,7 +9,7 @@ import 'package:flutter_core/theme/app_theme.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shimmer/shimmer.dart';
 
-import 'native_ads_presenter_high.dart';
+import '../presenter/native_ads_presenter_high.dart';
 
 abstract class NativeAdWidget extends StatefulWidget {
   final String nativeAdId;

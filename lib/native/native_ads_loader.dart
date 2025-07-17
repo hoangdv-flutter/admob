@@ -1,5 +1,4 @@
 import 'package:admob/ad_id/ad_id.dart';
-import 'package:admob/admob.dart';
 import 'package:admob/ads_loader.dart';
 import 'package:admob/listener/global_listener.dart';
 import 'package:admob/native/native_ads_factory.dart';
@@ -11,7 +10,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:injectable/injectable.dart';
 import 'package:synchronized/synchronized.dart';
 
-import 'native_ads_presenter_high.dart';
+import '../presenter/native_ads_presenter_high.dart';
 
 @lazySingleton
 class NativeAdsLoader {

@@ -8,7 +8,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:synchronized/extension.dart';
 
-import '../native/native_ads_presenter_high.dart';
+import 'native_ads_presenter_high.dart';
 
 part 'collapsed_native_state.dart';
 

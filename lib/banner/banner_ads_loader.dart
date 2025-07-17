@@ -58,13 +58,14 @@ class BannerAdsLoader extends Executable {
             adUnitId: adID ?? adId.bannerAdUnitId,
             listener: BannerAdListener(
               onAdLoaded: (ad) {
-                print("load banner id $adID");
+                print("banner load successfully $adID");
                 _loadable = true;
                 _bannerAd = ad as BannerAd?;
                 _bannerAdStreamController.addSafety(_bannerAd);
               },
               onPaidEvent: GlobalAdListener.onPaidEventCallback,
               onAdFailedToLoad: (ad, error) async {
+                print("banner load error $adID -- ${error.message}");
                 _loadable = true;
                 ad.dispose();
                 _bannerAdStreamController.addErrorSafety(error);

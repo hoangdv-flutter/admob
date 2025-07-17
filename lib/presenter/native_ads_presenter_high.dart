@@ -122,10 +122,12 @@ class NativeAdsLoaderHigh {
 
   void preload(NativeHighEnum type) {
     if (!appInject<AdsLoader>().isInitial) {
+      _state[type] = NativeAdLoadState.failed;
       return;
     }
     if (premiumHolder.isPremium ||
         _adShared.nativeScreenConfig[type.nativeID] == false) {
+      _state[type] = NativeAdLoadState.failed;
       return;
     }
 

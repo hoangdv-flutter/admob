@@ -24,7 +24,10 @@ import 'package:admob/native/full_screen/full_screen_native_loader.dart'
     as _i629;
 import 'package:admob/native/native_ads_factory.dart' as _i212;
 import 'package:admob/native/native_ads_loader.dart' as _i598;
-import 'package:admob/native/native_ads_presenter_high.dart' as _i793;
+import 'package:admob/native/native_ads_only_loader.dart' as _i252;
+import 'package:admob/presenter/native_ads_presenter_high.dart' as _i835;
+import 'package:admob/presenter/native_collapsed_only_ads_presenter.dart'
+    as _i154;
 import 'package:admob/shared/ads_shared.dart' as _i484;
 import 'package:flutter_core/data/shared/premium_holder.dart' as _i932;
 import 'package:get_it/get_it.dart' as _i174;
@@ -51,10 +54,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i484.AdShared>(
         () => _i484.AdShared(gh<_i460.SharedPreferences>()));
-    gh.singleton<_i793.NativeAdsLoaderHigh>(() => _i793.NativeAdsLoaderHigh(
+    gh.singleton<_i835.NativeAdsLoaderHigh>(() => _i835.NativeAdsLoaderHigh(
           gh<_i932.PremiumHolder>(),
           gh<_i484.AdShared>(),
         ));
+    gh.factory<_i154.NativeAdsOnlyNotifier>(
+        () => _i154.NativeAdsOnlyNotifier(useCollapsedNative: gh<bool>()));
     gh.factory<_i837.AdId>(
       () => _i508.AdHelper(
         gh<_i837.AdId>(instanceName: 'adIdDebug'),
@@ -114,6 +119,10 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       dispose: (i) => i.dispose(),
     );
+    gh.lazySingleton<_i252.NativeAdsOnlyLoader>(() => _i252.NativeAdsOnlyLoader(
+          gh<_i932.PremiumHolder>(),
+          gh<_i484.AdShared>(),
+        ));
     gh.lazySingleton<_i598.NativeAdsLoader>(
       () => _i598.NativeAdsLoader(
         gh<_i837.AdId>(instanceName: 'globalAdId'),

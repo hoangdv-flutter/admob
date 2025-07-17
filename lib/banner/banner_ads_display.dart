@@ -158,7 +158,7 @@ class _BannerWidgetState extends BaseState<BannerWidget>
     loadBanner();
     return StreamBuilder(
       builder: (context, snapshot) => Container(
-        color: Colors.white,
+        color: snapshot.hasError ? Colors.transparent : Colors.white,
         width: double.infinity,
         child: snapshot.hasData
             ? snapshot.data == null
