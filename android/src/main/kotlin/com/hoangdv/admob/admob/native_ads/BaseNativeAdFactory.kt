@@ -12,11 +12,11 @@ import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.hoangdv.admob.admob.R
 import com.hoangdv.admob.admob.ext.isVisible
-import io.flutter.plugins.googlemobileads.GoogleMobileAdsPlugin
+import io.flutter.plugins.googlemobileads.NativeAdFactory
 
 abstract class BaseNativeAdFactory(
     private val context: Context, @LayoutRes private val resLayout: Int
-) : GoogleMobileAdsPlugin.NativeAdFactory {
+) : NativeAdFactory {
 
     protected var view: View? = null
 

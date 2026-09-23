@@ -5,7 +5,7 @@ import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.hoangdv.admob.admob.databinding.MediumNativeAdsBinding
 import com.hoangdv.admob.admob.ext.isVisible
-import io.flutter.plugins.googlemobileads.GoogleMobileAdsPlugin.NativeAdFactory
+import io.flutter.plugins.googlemobileads.NativeAdFactory
 
 class MediumNativeAdFactory(private val layoutInflater: LayoutInflater) : NativeAdFactory {
 
